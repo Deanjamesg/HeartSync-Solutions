@@ -8,11 +8,11 @@ namespace HeartSyncSolutions.Models
     public class ApplicationUser : IdentityUser
     {
         // These are our custom fields
-        public string First_Name { get; set; }
+        public string FirstName { get; set; }
 
-        public string Last_Name { get; set; }
+        public string LastName { get; set; }
 
-        public string Contact_Number { get; set; }
+        public string ContactNumber { get; set; }
 
         // We can use these bools to check what kind of user they are
         public bool IsVolunteer { get; set; }

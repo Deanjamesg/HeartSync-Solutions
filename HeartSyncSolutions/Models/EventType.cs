@@ -8,7 +8,7 @@ namespace HeartSyncSolutions.Models
     public class EventType
     {
         [Key] // Tells EF this is the primary key
-        public int Event_Type_ID { get; set; }
+        public int EventTypeID { get; set; }
 
         public string Title { get; set; }
 
