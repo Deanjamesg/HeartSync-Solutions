@@ -2,7 +2,104 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Overview</h1>
+    <div class="d-flex">
+        <button class="btn btn-sm btn-outline-secondary me-2">This Week</button>
+        <button class="btn btn-sm btn-outline-secondary me-2">This Month</button>
+        <button class="btn btn-sm btn-secondary">This Year</button>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card dashboard-card p-3">
+            <div class="card-body">
+                <h5 class="card-title text-muted small text-uppercase">Total Donations (ZAR)</h5>
+                <p class="card-text h2 mb-0">R 14,320.50</p>
+                <span class="text-success small"><i class="bi bi-arrow-up"></i> R 1,200 this month</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card dashboard-card p-3">
+            <div class="card-body">
+                <h5 class="card-title text-muted small text-uppercase">Upcoming Events</h5>
+                <p class="card-text h2 mb-0">3</p>
+                <span class="text-muted small">1 Food Drive, 2 Outings</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card dashboard-card p-3">
+            <div class="card-body">
+                <h5 class="card-title text-muted small text-uppercase">Active Volunteers</h5>
+                <p class="card-text h2 mb-0">42</p>
+                <span class="text-success small"><i class="bi bi-plus"></i> 5 new this month</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card dashboard-card p-3">
+            <div class="card-body">
+                <h5 class="card-title text-muted small text-uppercase">Clothing Donations</h5>
+                <p class="card-text h2 mb-0">8 Pending</p>
+                <span class="text-warning small"><i class="bi bi-clock"></i> Awaiting pickup</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card dashboard-card">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="card-title mb-0">Donation Volume</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center text-muted p-5">
+                    [A chart component (e.g., using Chart.js) would go here]
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card dashboard-card">
+            <div class="card-header bg-white border-0 py-3">
+                <h5 class="card-title mb-0">Recent Donations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">John D.</p>
+                            <small class="text-muted">Monetary Donation</small>
+                        </div>
+                        <span class="fw-bold text-success">+ R 500.00</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">Jane S.</p>
+                            <small class="text-muted">Clothing Donation</small>
+                        </div>
+                        <span class="text-muted">3 Bags</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">Anonymous</p>
+                            <small class="text-muted">Monetary Donation</small>
+                        </div>
+                        <span class="fw-bold text-success">+ R 2,000.00</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">Michael B.</p>
+                            <small class="text-muted">Clothing Donation</small>
+                        </div>
+                        <span class="text-muted">1 Box (Pending)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

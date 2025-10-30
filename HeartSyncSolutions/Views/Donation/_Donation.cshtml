@@ -1,0 +1,55 @@
+﻿<h1 class="h2 mb-4">Make a Donation</h1>
+
+<div class="card dashboard-card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="donationTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="make-donation-tab" data-bs-toggle="tab" data-bs-target="#make-donation" type="button" role="tab" aria-controls="make-donation" aria-selected="true">
+                    New Donation
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                    My Donation History
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="tab-content" id="donationTabsContent">
+
+            <div class="tab-pane fade show active" id="make-donation" role="tabpanel" aria-labelledby="make-donation-tab">
+                <h5 class="card-title mb-3">Choose Donation Type</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 p-4"
+                                hx-get="@Url.Action("MonetaryDonationForm")"
+                                hx-target="#donation-form-container"
+                                hx-swap="innerHTML">
+                            <i class="bi bi-cash-coin h1"></i>
+                            <span class="d-block h5">Monetary Donation</span>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-primary w-100 p-4"
+                                hx-get="@Url.Action("ClothingDonationForm")"
+                                hx-target="#donation-form-container"
+                                hx-swap="innerHTML">
+                            <i class="bi bi-box-seam h1"></i>
+                            <span class="d-block h5">Clothing / In-Kind</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="donation-form-container" class="mt-4">
+                    <p class="text-center text-muted">Please select a donation type above to begin.</p>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <partial name="_DonationHistory" model="Model.DonationHistory" />
+            </div>
+        </div>
+    </div>
+</div>
