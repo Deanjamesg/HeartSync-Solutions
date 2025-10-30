@@ -1,4 +1,5 @@
 using HeartSyncSolutions.Data;
+using HeartSyncSolutions.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,12 @@ namespace HeartSyncSolutions
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            // Register services
+            builder.Services.AddScoped<IDonationService, DonationService>();
+            builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
