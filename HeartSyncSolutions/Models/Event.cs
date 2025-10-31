@@ -6,9 +6,15 @@ namespace HeartSyncSolutions.Models
 {
     public class Event
     {
+        // Set the string ID in the constructor
+        public Event()
+        {
+            EventID = Guid.NewGuid().ToString();
+        }
+
         // [Key] tells EF that this is the Primary Key
         [Key]
-        public int EventID { get; set; }
+        public string EventID { get; set; }
 
         public string Name { get; set; }
 
@@ -17,13 +23,13 @@ namespace HeartSyncSolutions.Models
         public DateTime Date { get; set; }
 
         // This is the link to the EventType table
-        public int EventTypeID { get; set; }
+        public string EventTypeID { get; set; }
 
         // The 'virtual' keyword helps EF load this data later
         public virtual EventType EventType { get; set; }
 
         // This is the link to the EventStatus table
-        public int EventStatusID { get; set; }
+        public string EventStatusID { get; set; }
 
         public virtual EventStatus EventStatus { get; set; }
 

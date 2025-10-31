@@ -19,7 +19,7 @@ namespace HeartSyncSolutions.Models
 
         public bool IsDonor { get; set; }
 
-        // This links to the User_Event table.
+        // This links to the UserEvent table.
         // A user can sign up for lots of events.
         public virtual ICollection<UserEvent> UserEvents { get; set; }
 

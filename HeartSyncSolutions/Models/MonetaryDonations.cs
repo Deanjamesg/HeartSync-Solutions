@@ -6,8 +6,14 @@ namespace HeartSyncSolutions.Models
     // This table logs all one-time donations
     public class MonetaryDonations
     {
+        // Set the string ID in the constructor
+        public MonetaryDonations()
+        {
+            MonetaryDonationID = Guid.NewGuid().ToString();
+        }
+
         [Key] // The primary key
-        public int MonetaryDonationID { get; set; }
+        public string MonetaryDonationID { get; set; }
 
         public double DonationAmount { get; set; }
 

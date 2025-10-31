@@ -1,19 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.Models
 {
     // Lookup table for our volunteer print-out.
-    // e.g. "Signed up" , "Attented" , "No Show".
+    // e.g. "Signed up" , "Attended" , "No Show".
     public class AttendanceStatus
     {
-            [Key] // Tells EF this is the primary key.
-            public int AttendanceStatusID { get; set; }
+        // Set the string ID in the constructor
+        public AttendanceStatus()
+        {
+            AttendanceStatusID = Guid.NewGuid().ToString();
+        }
 
-            public string Status { get; set; }
+        [Key] // Tells EF this is the primary key.
+        public string AttendanceStatusID { get; set; }
 
-            // This links to the User_Event table.
-            public virtual ICollection<UserEvent> UserEvents { get; set; }
-        
+        public string Status { get; set; }
+
+        // This links to the UserEvent table.
+        public virtual ICollection<UserEvent> UserEvents { get; set; }
     }
 }
