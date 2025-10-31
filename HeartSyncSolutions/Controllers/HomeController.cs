@@ -15,6 +15,13 @@ namespace HeartSyncSolutions.Controllers
 
         public IActionResult Index()
         {
+            // Check if this is an HTMX request
+            if (Request.Headers["HX-Request"] == "true")
+            {
+                return PartialView("Index");
+            }
+
+            // For initial page load, return full view with layout
             return View();
         }
 
