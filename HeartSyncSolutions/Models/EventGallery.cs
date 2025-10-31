@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.Models
 {
@@ -6,15 +7,21 @@ namespace HeartSyncSolutions.Models
     // So the admin can upload photos of the outreach.
     public class EventGallery
     {
+        // Set the string ID in the constructor
+        public EventGallery()
+        {
+            EventGalleryID = Guid.NewGuid().ToString();
+        }
+
         [Key] // The primary key
-        public int EventGalleryID { get; set; }
+        public string EventGalleryID { get; set; }
 
         public string ImageURL { get; set; }
 
         public string Caption { get; set; }
 
         // This links this picture back to a specific event
-        public int EventID { get; set; }
+        public string EventID { get; set; }
 
         public virtual Event Event { get; set; }
     }

@@ -6,8 +6,14 @@ namespace HeartSyncSolutions.Models
     // It Links Users to an Event.
     public class UserEvent
     {
+        // Set the string ID in the constructor
+        public UserEvent()
+        {
+            UserEventID = Guid.NewGuid().ToString();
+        }
+
         [Key] // The primary key for this table
-        public int UserEventID { get; set; }
+        public string UserEventID { get; set; }
 
         // This links to the 'Events' table
         public int EventID { get; set; }
@@ -19,7 +25,7 @@ namespace HeartSyncSolutions.Models
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         // This links to the "Attended" / "Not Attended" status
-        public int AttendanceStatusID { get; set; }
+        public string AttendanceStatusID { get; set; }
 
         public virtual AttendanceStatus AttendanceStatus { get; set; }
     }

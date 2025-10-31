@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.Models
@@ -7,8 +8,14 @@ namespace HeartSyncSolutions.Models
     // Simple class that we call a 'lookup table'.
     public class EventType
     {
+        // Set the string ID in the constructor
+        public EventType()
+        {
+            EventTypeID = Guid.NewGuid().ToString();
+        }
+
         [Key] // Tells EF this is the primary key
-        public int EventTypeID { get; set; }
+        public string EventTypeID { get; set; }
 
         public string Title { get; set; }
 

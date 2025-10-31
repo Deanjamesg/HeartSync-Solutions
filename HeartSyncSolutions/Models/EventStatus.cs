@@ -1,13 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.Models
-{       
-    // Simple lookup table for a drop down menu on admin dashboard to hold "Planning" , "Active" , "Completed".
+{
+    // Simple lookup table for a drop down menu on admin dashboard
+    // e.g. "Planning" , "Active" , "Completed".
     public class EventStatus
     {
+        // Set the string ID in the constructor
+        public EventStatus()
+        {
+            EventStatusID = Guid.NewGuid().ToString();
+        }
+
         [Key] // Tells EF this is the primary key
-        public int EventStatusID { get; set; }
+        public string EventStatusID { get; set; }
 
         public string Status { get; set; }
 

@@ -6,8 +6,15 @@ namespace HeartSyncSolutions.Models
     // This table stores the subscription agreement.
     public class PartnerPledge
     {
+
+        // Set the string ID in the constructor
+        public PartnerPledge()
+        {
+            PartnerPledgeID = Guid.NewGuid().ToString();
+        }
+
         [Key] // The primary key
-        public int PartnerPledgeID { get; set; }
+        public string PartnerPledgeID { get; set; }
 
         public double MonthlyAmount { get; set; }
 

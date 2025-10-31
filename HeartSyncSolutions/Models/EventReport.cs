@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeartSyncSolutions.Models
@@ -8,10 +9,10 @@ namespace HeartSyncSolutions.Models
     public class EventReport
     {
         // We make the Primary Key (PK) also the Foreign Key (FK) for a 1-to-1 relationship.
+        // No constructor here, because this ID must be set to match the Event's ID.
         [Key]
         [ForeignKey("Event")]
-
-        public int EventID { get; set; }
+        public string EventID { get; set; }
 
         // This is where the admin writes the report summary
         public string Summary { get; set; }
