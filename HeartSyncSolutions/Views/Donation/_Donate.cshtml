@@ -1,3 +1,5 @@
+﻿@model HeartSyncSolutions.ViewModels.MonetaryDonationViewModel
+
 <div class="content-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>Make a Donation</h3>
@@ -13,30 +15,34 @@
                     <h5 class="card-title mb-3">Select Donation Type</h5>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <div class="donation-type-card active" id="monetaryCard">
-                                <div class="text-center p-4">
-                                    <i class="bi bi-currency-dollar fs-1 text-primary mb-2"></i>
-                                    <h6>Monetary Donation</h6>
-                                    <p class="small text-muted mb-0">Support us financially</p>
+                            <a href="@Url.Action("Donate", "Donation")" class="text-decoration-none">
+                                <div class="donation-type-card active" id="monetaryCard">
+                                    <div class="p-4 text-center">
+                                        <i class="bi bi-currency-dollar fs-1 text-primary mb-2"></i>
+                                        <h6>Monetary Donation</h6>
+                                        <p class="small text-muted mb-0">Support us financially</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="donation-type-card" id="inKindCard">
-                                <div class="text-center p-4">
-                                    <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
-                                    <h6>In-Kind Donation</h6>
-                                    <p class="small text-muted mb-0">Donate Goods</p>
+                            <a href="@Url.Action("DonateInKind", "Donation")" class="text-decoration-none">
+                                <div class="donation-type-card" id="inKindCard">
+                                    <div class="p-4 text-center">
+                                        <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
+                                        <h6>In-Kind Donation</h6>
+                                        <p class="small text-muted mb-0">Donate Goods</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="monetaryForm">
-                <form hx-post="/Donation/SubmitDonation" hx-target="#content-container">
-                    <input type="hidden" name="donationType" value="monetary">
+                <form asp-action="SubmitMonetaryDonation" asp-controller="Donation" method="post">
+                    @Html.AntiForgeryToken()
                     
                     <div class="card mb-4">
                         <div class="card-body">
@@ -63,18 +69,31 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="donationAmount" class="form-label">Donation Amount (ZAR)</label>
+                                <label asp-for="DonationAmount" class="form-label"></label>
                                 <div class="input-group">
                                     <span class="input-group-text">R</span>
-                                    <input type="number" class="form-control" id="donationAmount" name="amount" placeholder="Enter amount" min="10" required>
+                                    <input asp-for="DonationAmount" class="form-control" placeholder="Enter amount" min="1" />
                                 </div>
+                                <span asp-validation-for="DonationAmount" class="text-danger"></span>
                             </div>
 
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="monthlyDonation" name="isRecurring">
-                                <label class="form-check-label" for="monthlyDonation">
-                                    Make this a monthly recurring donation
-                                </label>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="mb-3">
+                                    <label asp-for="DonorName" class="form-label"></label>
+                                    <input asp-for="DonorName" class="form-control" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="DonorEmail" class="form-label"></label>
+                                    <input asp-for="DonorEmail" class="form-control" type="email" />
+                                    <span asp-validation-for="DonorEmail" class="text-danger"></span>
+                                </div>
+                            }
+
+                            <div class="form-check mb-3">
+                                <input asp-for="IsAnonymous" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsAnonymous" class="form-check-label"></label>
                             </div>
                         </div>
                     </div>
@@ -85,68 +104,40 @@
                             <div class="row">
                                 <div class="col-md-4 mb-2">
                                     <div class="payment-method-card">
+                                        <input type="radio" asp-for="PaymentMethod" value="Credit Card" class="form-check-input me-2" checked />
                                         <i class="bi bi-credit-card fs-3 text-primary"></i>
                                         <span class="ms-2">Credit Card</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <div class="payment-method-card">
+                                        <input type="radio" asp-for="PaymentMethod" value="Bank Transfer" class="form-check-input me-2" />
                                         <i class="bi bi-bank fs-3 text-primary"></i>
-                                        <span class="ms-2">Electronic Bank Transfer</span>
+                                        <span class="ms-2">Bank Transfer</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button type="button" class="btn btn-outline-secondary" hx-get="/Home/Index" hx-target="#content-container">
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-heart-fill me-2"></i>Complete Donation
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="inKindForm" class="d-none">
-                <form hx-post="/Donation/RequestInKindDonation" hx-target="#content-container">
-                    <input type="hidden" name="donationType" value="inKind">
-                    
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">What would you like to donate?</h5>
-                            
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="itemDescription" name="description" rows="4" 
-                                          placeholder="Please describe the items you'd like to donate..." required></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Delivery Method</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="deliveryMethod" id="dropOff" value="dropOff" checked>
-                                    <label class="form-check-label" for="dropOff">
-                                        I will drop off the items
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="availableDate" class="form-label">Available Date</label>
-                                <input type="date" class="form-control" id="availableDate" name="availableDate" required>
+                                <label asp-for="Message" class="form-label"></label>
+                                <textarea asp-for="Message" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button type="button" class="btn btn-outline-secondary" hx-get="/Home/Index" hx-target="#content-container">
+                    <input type="hidden" asp-for="ApplicationUserId" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">
                             Cancel
-                        </button>
+                        </a>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-send me-2"></i>Submit Donation Request
+                            <i class="bi bi-heart-fill me-2"></i>Complete Donation
                         </button>
                     </div>
                 </form>
@@ -162,7 +153,7 @@
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R50 provides meals for 2 children</li>
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R100 provides meals for 5 children</li>
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R250 provides meals for 10 children</li>
-                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>R500 provides meals for 20 children </li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>R500 provides meals for 20 children</li>
                     </ul>
                 </div>
             </div>
@@ -181,6 +172,27 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Amount button selection
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const amount = this.dataset.amount;
+                if (amount !== 'custom') {
+                    document.querySelector('input[name="DonationAmount"]').value = amount;
+                } else {
+                    document.querySelector('input[name="DonationAmount"]').value = '';
+                    document.querySelector('input[name="DonationAmount"]').focus();
+                }
+            });
+        });
+    </script>
+}
 
 <style>
     .donation-type-card {
