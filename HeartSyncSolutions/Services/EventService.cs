@@ -19,162 +19,300 @@ namespace HeartSyncSolutions.Services
 
         public async Task<Event> CreateEventAsync(Event eventItem)
         {
-            // TODO: Implement event creation logic
-            throw new NotImplementedException();
+            if (eventItem == null)
+                throw new ArgumentNullException(nameof(eventItem));
+
+            _context.Events.Add(eventItem);
+            await _context.SaveChangesAsync();
+            return eventItem;
         }
 
         public async Task<Event> GetEventByIdAsync(int eventId)
         {
-            // TODO: Implement get event by ID logic with related data
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Include(e => e.UserEvents)
+                    .ThenInclude(ue => ue.ApplicationUser)
+                .Include(e => e.UserEvents)
+                    .ThenInclude(ue => ue.AttendanceStatus)
+                .Include(e => e.GalleryImages)
+                .Include(e => e.EventReport)
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
-            // TODO: Implement get all events logic with related data
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Include(e => e.UserEvents)
+                .OrderByDescending(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<bool> UpdateEventAsync(Event eventItem)
         {
-            // TODO: Implement update event logic
-            throw new NotImplementedException();
+            if (eventItem == null)
+                throw new ArgumentNullException(nameof(eventItem));
+
+            var existingEvent = await _context.Events.FindAsync(eventItem.EventID);
+            if (existingEvent == null)
+                return false;
+
+            existingEvent.Name = eventItem.Name;
+            existingEvent.Location = eventItem.Location;
+            existingEvent.Date = eventItem.Date;
+            existingEvent.EventTypeID = eventItem.EventTypeID;
+            existingEvent.EventStatusID = eventItem.EventStatusID;
+
+            _context.Events.Update(existingEvent);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteEventAsync(int eventId)
         {
-            // TODO: Implement delete event logic
-            throw new NotImplementedException();
-        }
+            var eventItem = await _context.Events.FindAsync(eventId);
+            if (eventItem == null)
+                return false;
 
+            _context.Events.Remove(eventItem);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<IEnumerable<Event>> GetEventsByStatusAsync(int statusId)
         {
-            // TODO: Implement get events by status logic
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.EventStatusID == statusId)
+                .OrderByDescending(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Event>> GetEventsByTypeAsync(int typeId)
         {
-            // TODO: Implement get events by type logic
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.EventTypeID == typeId)
+                .OrderByDescending(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Event>> GetEventsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            // TODO: Implement get events by date range logic
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.Date >= startDate && e.Date <= endDate)
+                .OrderBy(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Event>> GetUpcomingEventsAsync()
         {
-            // TODO: Implement get upcoming events logic
-            throw new NotImplementedException();
+            var today = DateTime.Today;
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.Date >= today)
+                .OrderBy(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Event>> GetPastEventsAsync()
         {
-            // TODO: Implement get past events logic
-            throw new NotImplementedException();
+            var today = DateTime.Today;
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.Date < today)
+                .OrderByDescending(e => e.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Event>> GetEventsByLocationAsync(string location)
         {
-            // TODO: Implement get events by location logic
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(location))
+                return new List<Event>();
 
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Include(e => e.EventStatus)
+                .Where(e => e.Location.Contains(location))
+                .OrderByDescending(e => e.Date)
+                .ToListAsync();
+        }
 
         public async Task<bool> RegisterVolunteerForEventAsync(int eventId, string userId, int attendanceStatusId)
         {
-            // TODO: Implement volunteer registration logic
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+                return false;
+
+            // Check if already registered
+            var existingRegistration = await _context.UserEvents
+                .FirstOrDefaultAsync(ue => ue.EventID == eventId && ue.ApplicationUserID == userId);
+
+            if (existingRegistration != null)
+                return false; // Already registered
+
+            var userEvent = new UserEvent
+            {
+                EventID = eventId,
+                ApplicationUserID = userId,
+                AttendanceStatusID = attendanceStatusId
+            };
+
+            _context.UserEvents.Add(userEvent);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UnregisterVolunteerFromEventAsync(int eventId, string userId)
         {
-            // TODO: Implement volunteer unregistration logic
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+                return false;
+
+            var userEvent = await _context.UserEvents
+                .FirstOrDefaultAsync(ue => ue.EventID == eventId && ue.ApplicationUserID == userId);
+
+            if (userEvent == null)
+                return false;
+
+            _context.UserEvents.Remove(userEvent);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateVolunteerAttendanceStatusAsync(int userEventId, int newAttendanceStatusId)
         {
-            // TODO: Implement update volunteer attendance status logic
-            throw new NotImplementedException();
+            var userEvent = await _context.UserEvents.FindAsync(userEventId);
+            if (userEvent == null)
+                return false;
+
+            userEvent.AttendanceStatusID = newAttendanceStatusId;
+            _context.UserEvents.Update(userEvent);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<UserEvent>> GetVolunteersForEventAsync(int eventId)
         {
-            // TODO: Implement get volunteers for event logic
-            throw new NotImplementedException();
+            return await _context.UserEvents
+                .Include(ue => ue.ApplicationUser)
+                .Include(ue => ue.AttendanceStatus)
+                .Where(ue => ue.EventID == eventId)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<UserEvent>> GetVolunteersByAttendanceStatusAsync(int eventId, int attendanceStatusId)
         {
-            // TODO: Implement get volunteers by attendance status logic
-            throw new NotImplementedException();
+            return await _context.UserEvents
+                .Include(ue => ue.ApplicationUser)
+                .Include(ue => ue.AttendanceStatus)
+                .Where(ue => ue.EventID == eventId && ue.AttendanceStatusID == attendanceStatusId)
+                .ToListAsync();
         }
 
         public async Task<int> GetVolunteerCountForEventAsync(int eventId)
         {
-            // TODO: Implement get volunteer count logic
-            throw new NotImplementedException();
+            return await _context.UserEvents
+                .Where(ue => ue.EventID == eventId)
+                .CountAsync();
         }
 
         public async Task<bool> AddEventGalleryImageAsync(EventGallery galleryImage)
         {
-            // TODO: Implement add gallery image logic
-            throw new NotImplementedException();
+            if (galleryImage == null)
+                throw new ArgumentNullException(nameof(galleryImage));
+
+            _context.EventGalleries.Add(galleryImage);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<EventGallery>> GetEventGalleryImagesAsync(int eventId)
         {
-            // TODO: Implement get event gallery images logic
-            throw new NotImplementedException();
+            return await _context.EventGalleries
+                .Where(eg => eg.EventID == eventId)
+                .ToListAsync();
         }
 
         public async Task<bool> DeleteEventGalleryImageAsync(int galleryImageId)
         {
-            // TODO: Implement delete gallery image logic
-            throw new NotImplementedException();
+            var galleryImage = await _context.EventGalleries.FindAsync(galleryImageId);
+            if (galleryImage == null)
+                return false;
+
+            _context.EventGalleries.Remove(galleryImage);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<EventReport> CreateEventReportAsync(EventReport report)
         {
-            // TODO: Implement create event report logic
-            throw new NotImplementedException();
+            if (report == null)
+                throw new ArgumentNullException(nameof(report));
+
+            // Check if report already exists for this event
+            var existingReport = await _context.EventReports
+                .FirstOrDefaultAsync(er => er.EventID == report.EventID);
+
+            if (existingReport != null)
+                throw new InvalidOperationException("A report already exists for this event.");
+
+            _context.EventReports.Add(report);
+            await _context.SaveChangesAsync();
+            return report;
         }
 
         public async Task<EventReport> GetEventReportByEventIdAsync(int eventId)
         {
-            // TODO: Implement get event report logic
-            throw new NotImplementedException();
+            return await _context.EventReports
+                .Include(er => er.Event)
+                .FirstOrDefaultAsync(er => er.EventID == eventId);
         }
 
         public async Task<bool> UpdateEventReportAsync(EventReport report)
         {
-            // TODO: Implement update event report logic
-            throw new NotImplementedException();
-        }
+            if (report == null)
+                throw new ArgumentNullException(nameof(report));
 
+            var existingReport = await _context.EventReports.FindAsync(report.EventID);
+            if (existingReport == null)
+                return false;
+
+            existingReport.Summary = report.Summary;
+
+            _context.EventReports.Update(existingReport);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<int> GetTotalEventCountAsync()
         {
-            // TODO: Implement get total event count logic
-            throw new NotImplementedException();
+            return await _context.Events.CountAsync();
         }
 
         public async Task<Dictionary<string, int>> GetEventCountByStatusAsync()
         {
-            // TODO: Implement get event count by status logic
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventStatus)
+                .GroupBy(e => e.EventStatus.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Status, x => x.Count);
         }
-
+        
         public async Task<Dictionary<string, int>> GetEventCountByTypeAsync()
         {
-            // TODO: Implement get event count by type logic
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(e => e.EventType)
+                .GroupBy(e => e.EventType.Title)
+                .Select(g => new { Type = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Type, x => x.Count);
         }
-
     }
 }
