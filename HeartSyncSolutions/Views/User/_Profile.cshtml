@@ -1,0 +1,49 @@
+﻿<h1 class="h2 mb-4">My Profile</h1>
+
+<div class="card dashboard-card">
+    <div class="card-body p-4">
+
+        <form hx-post="@Url.Action("UpdateProfile", "User")" hx-target="this" hx-swap="outerHTML">
+            <div class="row g-3">
+                <div class="col-12">
+                    <h5 class="card-title">My Badges</h5>
+                    <span class="badge bg-success" title="You've made a donation!"><i class="bi bi-heart-fill"></i> Donor</span>
+                    <span class="badge bg-primary" title="You've volunteered at an event!"><i class="bi bi-person-check-fill"></i> Volunteer</span>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" value="@Model.FirstName">
+                </div>
+                <div class="col-md-6">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" value="@Model.LastName">
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" value="@Model.Email" disabled readonly>
+                    <div class="form-text">Email cannot be changed here.</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <input type="tel" class="form-control" id="contactNumber" value="@Model.ContactNumber">
+                </div>
+
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">Privacy Settings</h5>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="isAnonymous" @(Model.IsAnonymous ? "checked" : "")>
+                        <label class="form-check-label" for="isAnonymous">
+                            Make me **Anonymous**
+                        </label>
+                        <div class="form-text">If checked, your name will appear as "Anonymous" on public donation lists.</div>
+                    </div>
+                </div>
+
+                <div class="col-12 text-end mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
