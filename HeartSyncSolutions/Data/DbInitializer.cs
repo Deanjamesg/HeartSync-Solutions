@@ -104,8 +104,7 @@ namespace HeartSyncSolutions.Data
 
             var statuses = new List<EventStatus>
             {
-                new EventStatus { Status = "Planning" }, // Default for new events
-                new EventStatus { Status = "Active" }, // Means it's upcoming and visible
+                new EventStatus { Status = "Up-coming" }, // Default for new events
                 new EventStatus { Status = "Completed" },
                 new EventStatus { Status = "Cancelled" }
             };
