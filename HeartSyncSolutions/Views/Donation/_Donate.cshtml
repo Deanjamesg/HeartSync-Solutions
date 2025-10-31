@@ -1,0 +1,267 @@
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Make a Donation</h3>
+        <button class="btn btn-outline-secondary" hx-get="/Donation/DonationHistory" hx-target="#content-container">
+            <i class="bi bi-clock-history me-2"></i>My Donation History
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Select Donation Type</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="donation-type-card active" id="monetaryCard">
+                                <div class="text-center p-4">
+                                    <i class="bi bi-currency-dollar fs-1 text-primary mb-2"></i>
+                                    <h6>Monetary Donation</h6>
+                                    <p class="small text-muted mb-0">Support us financially</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="donation-type-card" id="inKindCard">
+                                <div class="text-center p-4">
+                                    <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
+                                    <h6>In-Kind Donation</h6>
+                                    <p class="small text-muted mb-0">Donate Goods</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="monetaryForm">
+                <form hx-post="/Donation/SubmitDonation" hx-target="#content-container">
+                    <input type="hidden" name="donationType" value="monetary">
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Select Amount</h5>
+                            <div class="row mb-3">
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="50">R50</button>
+                                </div>
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="100">R100</button>
+                                </div>
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="250">R250</button>
+                                </div>
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="500">R500</button>
+                                </div>
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="1000">R1000</button>
+                                </div>
+                                <div class="col-4 col-md-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary w-100 amount-btn" data-amount="custom">Custom</button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="donationAmount" class="form-label">Donation Amount (ZAR)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R</span>
+                                    <input type="number" class="form-control" id="donationAmount" name="amount" placeholder="Enter amount" min="10" required>
+                                </div>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="monthlyDonation" name="isRecurring">
+                                <label class="form-check-label" for="monthlyDonation">
+                                    Make this a monthly recurring donation
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Payment Method</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="payment-method-card">
+                                        <i class="bi bi-credit-card fs-3 text-primary"></i>
+                                        <span class="ms-2">Credit Card</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="payment-method-card">
+                                        <i class="bi bi-bank fs-3 text-primary"></i>
+                                        <span class="ms-2">Electronic Bank Transfer</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" hx-get="/Home/Index" hx-target="#content-container">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-heart-fill me-2"></i>Complete Donation
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="inKindForm" class="d-none">
+                <form hx-post="/Donation/RequestInKindDonation" hx-target="#content-container">
+                    <input type="hidden" name="donationType" value="inKind">
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">What would you like to donate?</h5>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="itemDescription" name="description" rows="4" 
+                                          placeholder="Please describe the items you'd like to donate..." required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Delivery Method</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="deliveryMethod" id="dropOff" value="dropOff" checked>
+                                    <label class="form-check-label" for="dropOff">
+                                        I will drop off the items
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="availableDate" class="form-label">Available Date</label>
+                                <input type="date" class="form-control" id="availableDate" name="availableDate" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary" hx-get="/Home/Index" hx-target="#content-container">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send me-2"></i>Submit Donation Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title">Your Impact</h6>
+                    <p class="small text-muted">Every donation makes a difference in our community.</p>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R50 provides meals for 2 children</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R100 provides meals for 5 children</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>R250 provides meals for 10 children</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>R500 provides meals for 20 children </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Need Help?</h6>
+                    <p class="small text-muted">
+                        Have questions about donating? Contact our team.
+                    </p>
+                    <a href="#" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="bi bi-envelope me-2"></i>Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .donation-type-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .donation-type-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .donation-type-card.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .amount-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+    }
+
+    .payment-method-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-method-card:hover {
+        border-color: #667eea;
+        background-color: #f7fafc;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+    }
+</style>
+
+<script>
+    // Toggle between monetary and in-kind forms
+    document.getElementById('monetaryCard').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('inKindCard').classList.remove('active');
+        document.getElementById('monetaryForm').classList.remove('d-none');
+        document.getElementById('inKindForm').classList.add('d-none');
+    });
+
+    document.getElementById('inKindCard').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('monetaryCard').classList.remove('active');
+        document.getElementById('inKindForm').classList.remove('d-none');
+        document.getElementById('monetaryForm').classList.add('d-none');
+    });
+
+    // Amount button selection
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const amount = this.dataset.amount;
+            if (amount !== 'custom') {
+                document.getElementById('donationAmount').value = amount;
+            } else {
+                document.getElementById('donationAmount').value = '';
+                document.getElementById('donationAmount').focus();
+            }
+        });
+    });
+</script>
