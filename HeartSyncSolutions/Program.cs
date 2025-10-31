@@ -66,23 +66,25 @@ namespace HeartSyncSolutions
 
             var app = builder.Build();
 
-            // --- 2. Seed roles on startup ---
+            // --- 2. Run the data seeder ---
+            // We create a 'scope' to get the services we need
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                
                 try
                 {
-                    await SeedRolesAsync(services, logger);
+                    // Try to run our new initializer (this already seeds roles)
+                    await DbInitializer.Initialize(services);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "An error occurred while seeding roles.");
+                    // Log an error if something goes wrong
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
 
-            // --- 3. Configure the HTTP request pipeline ---
+            // ---3. Configure the HTTP request pipeline ---
 
             if (app.Environment.IsDevelopment())
             {
