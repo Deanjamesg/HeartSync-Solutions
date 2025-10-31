@@ -1,0 +1,119 @@
+﻿<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Browse Events</h3>
+        <button class="btn btn-outline-primary" hx-get="/Event/SignedUpEvents" hx-target="#content-container">
+            <i class="bi bi-check-circle me-2"></i>My Signed Up Events
+        </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-2">
+            <select class="form-select" id="filterCategory">
+                <option value="">All Categories</option>
+                <option value="Food Drive">Food Drive</option>
+                <option value="Outing">Outing</option>
+                <option value="Old Age Home Visit">Old Age Home Visit</option>
+                <option value="Childrens Home Visit">Childrens Home Visit</option>
+                <option value="Jacket Drive">Jacket Drive</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-2">
+            <select class="form-select" id="filterDate">
+                <option value="">All Dates</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+            </select>
+        </div>
+        <div class="ms-auto col-md-2 mb-2">
+            <button class="btn btn-primary w-100">
+                <i class="bi bi-funnel me-2"></i>Filter
+            </button>
+        </div>
+    </div>
+
+    <!-- Event Cards -->
+    <div class="row">
+        <!-- Sample Event Card 1 -->
+        <div class="col-md-6 mb-4">
+            <div class="card event-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-success p-2">Upcoming</span>
+                        <span class="badge bg-secondary p-2">Community Service</span>
+                    </div>
+                    <h5 class="card-title">Community Cleanup Drive</h5>
+                    <p class="card-text text-muted">Join us for a community cleanup event to make our neighborhood cleaner and greener.</p>
+
+                    <div class="event-details mt-3">
+                        <div class="detail-item mb-2">
+                            <i class="bi bi-calendar3 me-2 text-primary"></i>
+                            <span>Saturday, November 15, 2025</span>
+                        </div>
+                        <div class="detail-item mb-2">
+                            <i class="bi bi-clock me-2 text-primary"></i>
+                            <span>9:00 AM - 12:00 PM</span>
+                        </div>
+                        <div class="detail-item mb-2">
+                            <i class="bi bi-geo-alt me-2 text-primary"></i>
+                            <span>Central Park, Cape Town</span>
+                        </div>
+                        <div class="detail-item mb-2">
+                            <i class="bi bi-people me-2 text-primary"></i>
+                            <span>25 / 50 volunteers</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary btn-sm flex-fill" hx-get="/Event/EventDetails?id=1" hx-target="#content-container">
+                            View Details
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="bi bi-plus-circle me-1"></i>Sign Up
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .event-card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+        }
+
+    .btn-outline-primary {
+        border-color: #667eea;
+        color: #667eea;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+</style>

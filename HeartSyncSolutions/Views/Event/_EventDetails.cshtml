@@ -1,51 +1,149 @@
-﻿<div class="mb-4">
-    <a class="btn btn-link mb-2"
-       style="text-decoration: none;"
-       hx-get="@Url.Action("Index", "Event")"
-       hx-target="#main-content-area"
-       hx-push-url="@Url.Action("Index", "Event")">
-        <i class="bi bi-arrow-left"></i> Back to Events
-    </a>
-    <h1 class="h2">Food Drive - City Bowl</h1>
-</div>
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Event Details</h3>
+        <button class="btn btn-outline-secondary" hx-get="/Event/Events" hx-target="#content-container" hx-trigger="click">
+            <i class="bi bi-arrow-left me-2"></i>Back to Events
+        </button>
+    </div>
 
-<div class="card dashboard-card">
-    <div class="card-body p-4">
-        <div class="row g-4">
-            <div class="col-md-8">
-                <h5 class="card-title">Event Description</h5>
-                <p>Join us as we distribute warm meals and supplies to those in need in the city center. We'll be meeting at Greenpoint Common and splitting into teams. This is a great opportunity to connect with the community and make a real difference.</p>
-                
-                <h5 class="card-title mt-4">Volunteer Role</h5>
-                <p>Volunteers will help with: setting up tables, packing food parcels, handing out items, and engaging with our friends on the street. No prior experience needed, just a willing heart!</p>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-4">
+                <div class="d-flex gap-2 mb-3">
+                    <span class="badge fw-normal bg-success fs-5 p-2">Up-Coming</span>
+                    <span class="badge fw-normal bg-secondary fs-5 p-2">Food Drive</span>
+                </div>
+                <h2 class="mb-3">Food Drive</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra massa vel turpis varius, in vestibulum sapien bibendum. Donec aliquam eu est id egestas. Duis nec tincidunt justo. Nam porta nisi in quam rutrum iaculis. Maecenas porta fermentum nisl id posuere.
+                </p>
             </div>
-            <div class="col-md-4">
-                <div class="bg-light p-3 rounded">
-                    <h5 class="mb-3">Event Details</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <strong><i class="bi bi-calendar-event"></i> Date:</strong><br>
-                            Saturday, Nov 15 10:00 AM
-                        </li>
-                        <li class="mb-2">
-                            <strong><i class="bi bi-geo-alt"></i> Location:</strong><br>
-                            Greenpoint Common, Cape Town
-                        </li>
-                        <li class="mb-2">
-                            <strong><i class="bi bi-clock"></i> Duration:</strong><br>
-                            Approx. 3 hours
-                        </li>
-                        <li class="mb-2">
-                            <strong><i class="bi bi-people"></i> Volunteers:</strong><br>
-                            12 / 30 signed up
-                        </li>
-                    </ul>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary btn-lg"><i class="bi bi-person-plus"></i> Sign Up</button>
-                        <button class="btn btn-outline-secondary btn-sm">Contact Organizer</button>
+
+            <!-- Event Info Grid -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Event Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-calendar3 me-3 text-primary fs-5"></i>
+                                <div>
+                                    <small class="text-muted d-block">Date</small>
+                                    <strong>Saturday, November 15, 2025</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock me-3 text-primary fs-5"></i>
+                                <div>
+                                    <small class="text-muted d-block">Time</small>
+                                    <strong>9:00 AM - 12:00 PM</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt me-3 text-primary fs-5"></i>
+                                <div>
+                                    <small class="text-muted d-block">Location</small>
+                                    <strong>Central Park, Cape Town</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-people me-3 text-primary fs-5"></i>
+                                <div>
+                                    <small class="text-muted d-block">Volunteers</small>
+                                    <strong>25 registered</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope me-3 text-primary fs-5"></i>
+                                <div>
+                                    <small class="text-muted d-block">Contact</small>
+                                    <strong>info@greenfuture.org</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Sign Up Card -->
+            <div class="card mb-4 sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Join This Event</h5>
+
+                    <button class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-plus-circle me-2"></i>Sign Up Now
+                    </button>
+
+                    <hr>
+
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Signing up takes less than 2 minutes
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requirements Card -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Requirements</h6>
+                    <div class="d-flex align-items-start mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                        <small>Must be 16 years or older</small>
+                    </div>
+                    <div class="d-flex align-items-start mb-2">
+                        <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                        <small>No prior experience needed</small>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                        <small>Parental consent required for minors</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .timeline-item {
+        padding: 0.75rem 0;
+        border-left: 2px solid #667eea;
+        padding-left: 1.5rem;
+        margin-left: 0.5rem;
+        position: relative;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 1rem;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #667eea;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+    }
+</style>

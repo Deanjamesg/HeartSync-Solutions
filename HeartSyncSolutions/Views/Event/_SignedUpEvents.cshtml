@@ -1,51 +1,186 @@
-﻿<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2">My Signed-Up Events</h1>
-    <button class="btn btn-sm btn-outline-primary"
-            hx-get="@Url.Action("Index", "Event")"
-            hx-target="#main-content-area"
-            hx-push-url="@Url.Action("Index", "Event")">
-        Browse All Events
-    </button>
-</div>
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>My Signed Up Events</h3>
+        <button class="btn btn-outline-primary" hx-get="/Event/EventList" hx-target="#content-container">
+            <i class="bi bi-search me-2"></i>Browse More Events
+        </button>
+    </div>
 
-<div class="card dashboard-card">
-    <div class="card-body">
-        <p class="text-muted">These are the events you've signed up for. Please remember to "Confirm Attendance" 48 hours before the event so we can finalize numbers.</p>
-        
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Event</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Food Drive - City Bowl</strong></td>
-                    <td>Sat, Nov 15 10:00 AM</td>
-                    <td><span class="badge bg-warning text-dark">Interested</span></td>
-                    <td>
-                        <button class="btn btn-success btn-sm">Confirm</button>
-                        <button class="btn btn-outline-danger btn-sm">Cancel</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Children's Outing - Aquarium</strong></td>
-                    <td>Sat, Nov 29 9:00 AM</td>
-                    <td><span class="badge bg-success">Confirmed</span></td>
-                    <td>
-                        <button class="btn btn-outline-danger btn-sm">Cancel</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Clothing Sort - Warehouse</strong></td>
-                    <td>Tue, Dec 2 4:00 PM</td>
-                    <td><span class="badge bg-secondary">Participated</span></td>
-                    <td><span class="text-muted small">Thank you!</span></td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Tabs for filtering -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">
+                Upcoming Events
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed" type="button">
+                Completed Events
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled" type="button">
+                Cancelled
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+            <div class="card mb-3 event-item">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="badge bg-success p-2">Upcoming</span>
+                                <span class="badge bg-info p-2">Food Drive</span>
+                            </div>
+                            <h5 class="card-title mb-2">Food Drive</h5>
+                            <p class="card-text text-muted mb-2">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra massa vel turpis varius, in vestibulum sapien bibendum. Donec aliquam eu est id egestas. Duis nec tincidunt justo. Nam porta nisi in quam rutrum iaculis. Maecenas porta fermentum nisl id posuere.
+                            </p>
+                            <div class="event-meta">
+                                <small class="me-3">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    Saturday, November 15, 2025
+                                </small>
+                                <small class="me-3">
+                                    <i class="bi bi-clock me-1"></i>
+                                    9:00 AM - 12:00 PM
+                                </small>
+                                <small>
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    Central Park, Cape Town
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-sm" hx-get="/Event/EventDetails?id=1" hx-target="#content-container">
+                                    <i class="bi bi-eye me-1"></i>View Details
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-x-circle me-1"></i>Cancel Registration
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Events Tab -->
+        <div class="tab-pane fade" id="completed" role="tabpanel">
+            <div class="card mb-3 event-item">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="badge bg-success p-2">Completed</span>
+                                <span class="badge bg-secondary p-2">Food Drive</span>
+                            </div>
+                            <h5 class="card-title mb-2">Food Drive</h5>
+                            <p class="card-text text-muted mb-2">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra massa vel turpis varius, in vestibulum sapien bibendum. Donec aliquam eu est id egestas. Duis nec tincidunt justo. Nam porta nisi in quam rutrum iaculis. Maecenas porta fermentum nisl id posuere.
+                            </p>
+                            <div class="event-meta">
+                                <small class="me-3">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    October 15, 2025
+                                </small>
+                                <small class="me-3">
+                                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                    Attended
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-outline-primary btn-sm" hx-get="/Event/EventDetails?id=5" hx-target="#content-container">
+                                <i class="bi bi-eye me-1"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancelled Events Tab -->
+        <div class="tab-pane fade" id="cancelled" role="tabpanel">
+            <div class="card mb-3 event-item">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="badge bg-danger">Cancelled</span>
+                                <span class="badge bg-secondary">Food Drive</span>
+                            </div>
+                            <h5 class="card-title mb-2">Food Drive</h5>
+                            <p class="card-text text-muted mb-2">
+                                Event was cancelled due to unforeseen circumstances.
+                            </p>
+                            <div class="event-meta">
+                                <small class="me-3">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    Was scheduled for: October 20, 2025
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-outline-primary btn-sm" hx-get="/Event/EventDetails?id=6" hx-target="#content-container">
+                                <i class="bi bi-eye me-1"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (hidden by default, shown when no events) -->
+    <div class="text-center py-5 d-none" id="emptyState">
+        <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+        <h4>No Signed Up Events</h4>
+        <p class="text-muted">You haven't signed up for any events yet.</p>
+        <button class="btn btn-primary" hx-get="/Event/EventList" hx-target="#content-container">
+            <i class="bi bi-search me-2"></i>Browse Events
+        </button>
     </div>
 </div>
+
+<style>
+    .event-item {
+        border: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        transition: box-shadow 0.2s;
+    }
+
+    .event-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .event-meta {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        border: none;
+        border-bottom: 2px solid transparent;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #667eea;
+        background: none;
+        border-bottom: 2px solid #667eea;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+    }
+</style>
