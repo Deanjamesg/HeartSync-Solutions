@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace HeartSyncSolutions.Models
 {
     // Simple lookup table for a drop down menu on admin dashboard
-    // e.g. "Planning" , "Active" , "Completed".
+    // e.g. "Up Coming" , "Active" , "Completed".
     public class EventStatus
     {
         // Set the string ID in the constructor
