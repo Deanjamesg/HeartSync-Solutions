@@ -1,1 +1,95 @@
-﻿
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Create New Event</h3>
+        <button class="btn btn-outline-secondary" hx-get="/Event/EventManager" hx-target="#content-container">
+            <i class="bi bi-arrow-left me-2"></i>Back to Event Manager
+        </button>
+    </div>
+
+    <form hx-post="/Event/CreateEvent" hx-target="#content-container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" class="form-control" id="eventName" placeholder="Enter event name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label  class="form-label">Description</label>
+                    <textarea class="form-control" id="description" rows="4" placeholder="Describe your event..." required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Event Date</label>
+                        <input type="date" class="form-control" id="eventDate" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Event Time</label>
+                        <input type="time" class="form-control" id="eventTime" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="Event location" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="Food Drive">Food Drive</option>
+                            <option value="Outing">Outing</option>
+                            <option value="Old Age Home Visit">Old Age Home Visit</option>
+                            <option value="Childrens Home Visit">Childrens Home Visit</option>
+                            <option value="Jacket Drive">Jacket Drive</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">Event Settings</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="status">
+                                <option value="Up-Coming">Up-Coming</option>
+                                <option value="Completed" selected>Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="contact@example.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end mt-4">
+            <button type="button" class="btn btn-outline-secondary" hx-get="/Event/EventManager" hx-target="#content-container">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>Create Event
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+    }
+</style>

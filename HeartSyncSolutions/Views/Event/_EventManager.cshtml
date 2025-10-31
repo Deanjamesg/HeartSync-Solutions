@@ -1,0 +1,172 @@
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Event Manager</h3>
+        <button class="btn btn-primary" hx-get="/Event/CreateEvent" hx-target="#content-container">
+            <i class="bi bi-plus-circle me-2"></i>Create New Event
+        </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">24</h3>
+                            <small class="text-muted">Total Events</small>
+                        </div>
+                        <i class="bi bi-calendar-event fs-1 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">12</h3>
+                            <small class="text-muted">Upcoming</small>
+                        </div>
+                        <i class="bi bi-clock-history fs-1 text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">8</h3>
+                            <small class="text-muted">Completed</small>
+                        </div>
+                        <i class="bi bi-play-circle fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterStatus">
+                <option value="">All Status</option>
+                <option value="up-coming">Up-Coming</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterCategory">
+                <option value="">All Categories</option>
+                <option value="Food Drive">Food Drive</option>
+                <option value="Outing">Outing</option>
+                <option value="Old Age Home Visit">Old Age Home Visit</option>
+                <option value="Childrens Home Visit">Childrens Home Visit</option>
+                <option value="Jacket Drive">Jacket Drive</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" id="sortBy">
+                <option value="date">Sort by Date</option>
+                <option value="name">Sort by Name</option>
+                <option value="volunteers">Sort by Volunteers</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <button class="btn btn-outline-primary w-100">
+                <i class="bi bi-funnel me-2"></i>Filter
+            </button>
+        </div>
+    </div>
+
+    <!-- Events Table -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Category</th>
+                    <th>Date & Time</th>
+                    <th>Volunteers</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div>
+                            <strong>Community Cleanup Drive</strong>
+                            <br>
+                            <small class="text-muted">Central Park, Cape Town</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary p-2">Community Service</span>
+                    </td>
+                    <td>
+                        <div>
+                            Nov 15, 2025
+                            <br>
+                            <small class="text-muted">9:00 AM - 12:00 PM</small>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="fs-5 fw-normal">25</p>
+                    </td>
+                    <td>
+                        <span class="badge bg-success p-2">Published</span>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary" hx-get="/Event/EventDetails?id=1" hx-target="#content-container" title="View">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<style>
+    .stat-card {
+        border: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+    }
+
+    .table {
+        font-size: 0.95rem;
+    }
+
+    .table thead {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d94 100%);
+    }
+</style>
