@@ -16,7 +16,7 @@ namespace HeartSyncSolutions.Models
         public string UserEventID { get; set; }
 
         // This links to the 'Events' table
-        public int EventID { get; set; }
+        public string EventID { get; set; }
 
         public virtual Event Event { get; set; }
 

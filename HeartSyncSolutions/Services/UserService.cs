@@ -180,9 +180,9 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> IsUserRegisteredForEventAsync(string userId, int eventId)
+        public async Task<bool> IsUserRegisteredForEventAsync(string userId, string eventId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(eventId))
                 return false;
 
             return await _context.UserEvents

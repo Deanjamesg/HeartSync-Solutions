@@ -9,35 +9,35 @@ namespace HeartSyncSolutions.Services
     {
         // Event CRUD Operations
         Task<Event> CreateEventAsync(Event eventItem);
-        Task<Event> GetEventByIdAsync(int eventId);
+        Task<Event> GetEventByIdAsync(string eventId);
         Task<IEnumerable<Event>> GetAllEventsAsync();
         Task<bool> UpdateEventAsync(Event eventItem);
-        Task<bool> DeleteEventAsync(int eventId);
+        Task<bool> DeleteEventAsync(string eventId);
 
         // Event Filtering
-        Task<IEnumerable<Event>> GetEventsByStatusAsync(int statusId);
-        Task<IEnumerable<Event>> GetEventsByTypeAsync(int typeId);
+        Task<IEnumerable<Event>> GetEventsByStatusAsync(string statusId);
+        Task<IEnumerable<Event>> GetEventsByTypeAsync(string typeId);
         Task<IEnumerable<Event>> GetEventsByDateRangeAsync(DateTime startDate, DateTime endDate);
         Task<IEnumerable<Event>> GetUpcomingEventsAsync();
         Task<IEnumerable<Event>> GetPastEventsAsync();
         Task<IEnumerable<Event>> GetEventsByLocationAsync(string location);
 
         // Volunteer Management
-        Task<bool> RegisterVolunteerForEventAsync(int eventId, string userId, int attendanceStatusId);
-        Task<bool> UnregisterVolunteerFromEventAsync(int eventId, string userId);
-        Task<bool> UpdateVolunteerAttendanceStatusAsync(int userEventId, int newAttendanceStatusId);
-        Task<IEnumerable<UserEvent>> GetVolunteersForEventAsync(int eventId);
-        Task<IEnumerable<UserEvent>> GetVolunteersByAttendanceStatusAsync(int eventId, int attendanceStatusId);
-        Task<int> GetVolunteerCountForEventAsync(int eventId);
+        Task<bool> RegisterVolunteerForEventAsync(string eventId, string userId, string attendanceStatusId);
+        Task<bool> UnregisterVolunteerFromEventAsync(string eventId, string userId);
+        Task<bool> UpdateVolunteerAttendanceStatusAsync(string userEventId, string newAttendanceStatusId);
+        Task<IEnumerable<UserEvent>> GetVolunteersForEventAsync(string eventId);
+        Task<IEnumerable<UserEvent>> GetVolunteersByAttendanceStatusAsync(string eventId, string attendanceStatusId);
+        Task<int> GetVolunteerCountForEventAsync(string eventId);
 
         // Event Gallery Management
         Task<bool> AddEventGalleryImageAsync(EventGallery galleryImage);
-        Task<IEnumerable<EventGallery>> GetEventGalleryImagesAsync(int eventId);
-        Task<bool> DeleteEventGalleryImageAsync(int galleryImageId);
+        Task<IEnumerable<EventGallery>> GetEventGalleryImagesAsync(string eventId);
+        Task<bool> DeleteEventGalleryImageAsync(string galleryImageId);
 
         // Event Report Management
         Task<EventReport> CreateEventReportAsync(EventReport report);
-        Task<EventReport> GetEventReportByEventIdAsync(int eventId);
+        Task<EventReport> GetEventReportByEventIdAsync(string eventId);
         Task<bool> UpdateEventReportAsync(EventReport report);
 
         // Statistics

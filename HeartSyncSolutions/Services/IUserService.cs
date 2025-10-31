@@ -23,7 +23,7 @@ namespace HeartSyncSolutions.Services
         Task<IEnumerable<UserEvent>> GetUserEventRegistrationsAsync(string userId);
         Task<IEnumerable<Event>> GetUserUpcomingEventsAsync(string userId);
         Task<IEnumerable<Event>> GetUserPastEventsAsync(string userId);
-        Task<bool> IsUserRegisteredForEventAsync(string userId, int eventId);
+        Task<bool> IsUserRegisteredForEventAsync(string userId, string eventId);
 
         // User Donation Management
         Task<IEnumerable<MonetaryDonations>> GetUserMonetaryDonationsAsync(string userId);
