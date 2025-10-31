@@ -19,118 +19,261 @@ namespace HeartSyncSolutions.Services
 
         public async Task<MonetaryDonations> CreateMonetaryDonationAsync(MonetaryDonations donation)
         {
-            throw new NotImplementedException();
+            if (donation == null)
+                throw new ArgumentNullException(nameof(donation));
+
+            // Set the date if not already set
+            if (donation.Date == default)
+                donation.Date = DateTime.Now;
+
+            _context.MonetaryDonations.Add(donation);
+            await _context.SaveChangesAsync();
+            return donation;
         }
 
         public async Task<MonetaryDonations> GetMonetaryDonationByIdAsync(int donationId)
         {
-            throw new NotImplementedException();
+            return await _context.MonetaryDonations
+                .Include(d => d.ApplicationUser)
+                .FirstOrDefaultAsync(d => d.MonetaryDonationID == donationId);
         }
 
         public async Task<IEnumerable<MonetaryDonations>> GetAllMonetaryDonationsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.MonetaryDonations
+                .Include(d => d.ApplicationUser)
+                .OrderByDescending(d => d.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<MonetaryDonations>> GetMonetaryDonationsByUserAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+                return new List<MonetaryDonations>();
+
+            return await _context.MonetaryDonations
+                .Include(d => d.ApplicationUser)
+                .Where(d => d.ApplicationUserID == userId)
+                .OrderByDescending(d => d.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<MonetaryDonations>> GetAnonymousMonetaryDonationsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.MonetaryDonations
+                .Where(d => d.IsAnonymous == true)
+                .OrderByDescending(d => d.Date)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<MonetaryDonations>> GetMonetaryDonationsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            return await _context.MonetaryDonations
+                .Include(d => d.ApplicationUser)
+                .Where(d => d.Date >= startDate && d.Date <= endDate)
+                .OrderBy(d => d.Date)
+                .ToListAsync();
         }
 
         public async Task<double> GetTotalMonetaryDonationsAsync()
         {
-            throw new NotImplementedException();
+            var total = await _context.MonetaryDonations.SumAsync(d => d.DonationAmount);
+            return total;
         }
 
         public async Task<double> GetTotalMonetaryDonationsByUserAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+                return 0;
+
+            var total = await _context.MonetaryDonations
+                .Where(d => d.ApplicationUserID == userId)
+                .SumAsync(d => d.DonationAmount);
+            return total;
         }
 
         public async Task<bool> UpdateMonetaryDonationAsync(MonetaryDonations donation)
         {
-            throw new NotImplementedException();
+            if (donation == null)
+                throw new ArgumentNullException(nameof(donation));
+
+            var existingDonation = await _context.MonetaryDonations.FindAsync(donation.MonetaryDonationID);
+            if (existingDonation == null)
+                return false;
+
+            existingDonation.DonationAmount = donation.DonationAmount;
+            existingDonation.Date = donation.Date;
+            existingDonation.IsAnonymous = donation.IsAnonymous;
+            existingDonation.ApplicationUserID = donation.ApplicationUserID;
+
+            _context.MonetaryDonations.Update(existingDonation);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteMonetaryDonationAsync(int donationId)
         {
-            throw new NotImplementedException();
-        }
+            var donation = await _context.MonetaryDonations.FindAsync(donationId);
+            if (donation == null)
+                return false;
 
+            _context.MonetaryDonations.Remove(donation);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<InKindOffer> CreateInKindOfferAsync(InKindOffer offer)
         {
-            throw new NotImplementedException();
+            if (offer == null)
+                throw new ArgumentNullException(nameof(offer));
+
+            // Set the date if not already set
+            if (offer.OfferedDate == default)
+                offer.OfferedDate = DateTime.Now;
+
+            // Set default status if not provided
+            if (string.IsNullOrWhiteSpace(offer.Status))
+                offer.Status = "New Offer";
+
+            _context.InKindOffers.Add(offer);
+            await _context.SaveChangesAsync();
+            return offer;
         }
 
         public async Task<InKindOffer> GetInKindOfferByIdAsync(int offerId)
         {
-            throw new NotImplementedException();
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .FirstOrDefaultAsync(o => o.InKindOfferID == offerId);
         }
 
         public async Task<IEnumerable<InKindOffer>> GetAllInKindOffersAsync()
         {
-            throw new NotImplementedException();
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .OrderByDescending(o => o.OfferedDate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<InKindOffer>> GetInKindOffersByStatusAsync(string status)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(status))
+                return new List<InKindOffer>();
+
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .Where(o => o.Status == status)
+                .OrderByDescending(o => o.OfferedDate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<InKindOffer>> GetInKindOffersByUserAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(userId))
+                return new List<InKindOffer>();
+
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .Where(o => o.ApplicationUserID == userId)
+                .OrderByDescending(o => o.OfferedDate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<InKindOffer>> GetInKindOffersByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .Where(o => o.OfferedDate >= startDate && o.OfferedDate <= endDate)
+                .OrderBy(o => o.OfferedDate)
+                .ToListAsync();
         }
 
         public async Task<bool> UpdateInKindOfferStatusAsync(int offerId, string newStatus)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return false;
+
+            var offer = await _context.InKindOffers.FindAsync(offerId);
+            if (offer == null)
+                return false;
+
+            offer.Status = newStatus;
+            _context.InKindOffers.Update(offer);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateInKindOfferAsync(InKindOffer offer)
         {
-            throw new NotImplementedException();
+            if (offer == null)
+                throw new ArgumentNullException(nameof(offer));
+
+            var existingOffer = await _context.InKindOffers.FindAsync(offer.InKindOfferID);
+            if (existingOffer == null)
+                return false;
+
+            existingOffer.ItemDescription = offer.ItemDescription;
+            existingOffer.Status = offer.Status;
+            existingOffer.OfferedDate = offer.OfferedDate;
+            existingOffer.ApplicationUserID = offer.ApplicationUserID;
+
+            _context.InKindOffers.Update(existingOffer);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteInKindOfferAsync(int offerId)
         {
-            throw new NotImplementedException();
+            var offer = await _context.InKindOffers.FindAsync(offerId);
+            if (offer == null)
+                return false;
+
+            _context.InKindOffers.Remove(offer);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<int> GetTotalDonationCountAsync()
         {
-            throw new NotImplementedException();
+            var monetaryCount = await _context.MonetaryDonations.CountAsync();
+            var inKindCount = await _context.InKindOffers.CountAsync();
+            return monetaryCount + inKindCount;
         }
 
         public async Task<Dictionary<string, int>> GetDonationStatisticsByTypeAsync()
         {
-            throw new NotImplementedException();
+            var monetaryCount = await _context.MonetaryDonations.CountAsync();
+            var inKindCount = await _context.InKindOffers.CountAsync();
+
+            return new Dictionary<string, int>
+            {
+                { "Monetary", monetaryCount },
+                { "In-Kind", inKindCount }
+            };
         }
 
         public async Task<IEnumerable<MonetaryDonations>> GetRecentMonetaryDonationsAsync(int count)
         {
-            throw new NotImplementedException();
+            if (count <= 0)
+                count = 10;
+
+            return await _context.MonetaryDonations
+                .Include(d => d.ApplicationUser)
+                .OrderByDescending(d => d.Date)
+                .Take(count)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<InKindOffer>> GetRecentInKindOffersAsync(int count)
         {
-            throw new NotImplementedException();
+            if (count <= 0)
+                count = 10;
+
+            return await _context.InKindOffers
+                .Include(o => o.ApplicationUser)
+                .OrderByDescending(o => o.OfferedDate)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }
