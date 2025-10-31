@@ -31,8 +31,11 @@ namespace HeartSyncSolutions.Services
             return donation;
         }
 
-        public async Task<MonetaryDonations> GetMonetaryDonationByIdAsync(int donationId)
+        public async Task<MonetaryDonations> GetMonetaryDonationByIdAsync(string donationId)
         {
+            if (string.IsNullOrWhiteSpace(donationId))
+                return null;
+
             return await _context.MonetaryDonations
                 .Include(d => d.ApplicationUser)
                 .FirstOrDefaultAsync(d => d.MonetaryDonationID == donationId);
@@ -111,8 +114,11 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<bool> DeleteMonetaryDonationAsync(int donationId)
+        public async Task<bool> DeleteMonetaryDonationAsync(string donationId)
         {
+            if (string.IsNullOrWhiteSpace(donationId))
+                return false;
+
             var donation = await _context.MonetaryDonations.FindAsync(donationId);
             if (donation == null)
                 return false;
@@ -140,8 +146,11 @@ namespace HeartSyncSolutions.Services
             return offer;
         }
 
-        public async Task<InKindOffer> GetInKindOfferByIdAsync(int offerId)
+        public async Task<InKindOffer> GetInKindOfferByIdAsync(string offerId)
         {
+            if (string.IsNullOrWhiteSpace(offerId))
+                return null;
+
             return await _context.InKindOffers
                 .Include(o => o.ApplicationUser)
                 .FirstOrDefaultAsync(o => o.InKindOfferID == offerId);
@@ -188,9 +197,9 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> UpdateInKindOfferStatusAsync(int offerId, string newStatus)
+        public async Task<bool> UpdateInKindOfferStatusAsync(string offerId, string newStatus)
         {
-            if (string.IsNullOrWhiteSpace(newStatus))
+            if (string.IsNullOrWhiteSpace(newStatus) || string.IsNullOrWhiteSpace(offerId))
                 return false;
 
             var offer = await _context.InKindOffers.FindAsync(offerId);
@@ -222,8 +231,11 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<bool> DeleteInKindOfferAsync(int offerId)
+        public async Task<bool> DeleteInKindOfferAsync(string offerId)
         {
+            if (string.IsNullOrWhiteSpace(offerId))
+                return false;
+
             var offer = await _context.InKindOffers.FindAsync(offerId);
             if (offer == null)
                 return false;

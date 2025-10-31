@@ -27,8 +27,11 @@ namespace HeartSyncSolutions.Services
             return eventItem;
         }
 
-        public async Task<Event> GetEventByIdAsync(int eventId)
+        public async Task<Event> GetEventByIdAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return null;
+
             return await _context.Events
                 .Include(e => e.EventType)
                 .Include(e => e.EventStatus)
@@ -71,8 +74,11 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<bool> DeleteEventAsync(int eventId)
+        public async Task<bool> DeleteEventAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return false;
+
             var eventItem = await _context.Events.FindAsync(eventId);
             if (eventItem == null)
                 return false;
@@ -82,8 +88,12 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<IEnumerable<Event>> GetEventsByStatusAsync(int statusId)
+
+        public async Task<IEnumerable<Event>> GetEventsByStatusAsync(string statusId)
         {
+            if (string.IsNullOrWhiteSpace(statusId))
+                return new List<Event>();
+
             return await _context.Events
                 .Include(e => e.EventType)
                 .Include(e => e.EventStatus)
@@ -92,8 +102,11 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetEventsByTypeAsync(int typeId)
+        public async Task<IEnumerable<Event>> GetEventsByTypeAsync(string typeId)
         {
+            if (string.IsNullOrWhiteSpace(typeId))
+                return new List<Event>();
+
             return await _context.Events
                 .Include(e => e.EventType)
                 .Include(e => e.EventStatus)
@@ -147,9 +160,9 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> RegisterVolunteerForEventAsync(int eventId, string userId, int attendanceStatusId)
+        public async Task<bool> RegisterVolunteerForEventAsync(string eventId, string userId, string attendanceStatusId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(eventId) || string.IsNullOrWhiteSpace(attendanceStatusId))
                 return false;
 
             // Check if already registered
@@ -171,9 +184,9 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<bool> UnregisterVolunteerFromEventAsync(int eventId, string userId)
+        public async Task<bool> UnregisterVolunteerFromEventAsync(string eventId, string userId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(eventId))
                 return false;
 
             var userEvent = await _context.UserEvents
@@ -187,8 +200,11 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<bool> UpdateVolunteerAttendanceStatusAsync(int userEventId, int newAttendanceStatusId)
+        public async Task<bool> UpdateVolunteerAttendanceStatusAsync(string userEventId, string newAttendanceStatusId)
         {
+            if (string.IsNullOrWhiteSpace(userEventId) || string.IsNullOrWhiteSpace(newAttendanceStatusId))
+                return false;
+
             var userEvent = await _context.UserEvents.FindAsync(userEventId);
             if (userEvent == null)
                 return false;
@@ -199,8 +215,11 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<IEnumerable<UserEvent>> GetVolunteersForEventAsync(int eventId)
+        public async Task<IEnumerable<UserEvent>> GetVolunteersForEventAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return new List<UserEvent>();
+
             return await _context.UserEvents
                 .Include(ue => ue.ApplicationUser)
                 .Include(ue => ue.AttendanceStatus)
@@ -208,8 +227,11 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<UserEvent>> GetVolunteersByAttendanceStatusAsync(int eventId, int attendanceStatusId)
+        public async Task<IEnumerable<UserEvent>> GetVolunteersByAttendanceStatusAsync(string eventId, string attendanceStatusId)
         {
+            if (string.IsNullOrWhiteSpace(eventId) || string.IsNullOrWhiteSpace(attendanceStatusId))
+                return new List<UserEvent>();
+
             return await _context.UserEvents
                 .Include(ue => ue.ApplicationUser)
                 .Include(ue => ue.AttendanceStatus)
@@ -217,12 +239,16 @@ namespace HeartSyncSolutions.Services
                 .ToListAsync();
         }
 
-        public async Task<int> GetVolunteerCountForEventAsync(int eventId)
+        public async Task<int> GetVolunteerCountForEventAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return 0;
+
             return await _context.UserEvents
                 .Where(ue => ue.EventID == eventId)
                 .CountAsync();
         }
+
 
         public async Task<bool> AddEventGalleryImageAsync(EventGallery galleryImage)
         {
@@ -234,15 +260,21 @@ namespace HeartSyncSolutions.Services
             return true;
         }
 
-        public async Task<IEnumerable<EventGallery>> GetEventGalleryImagesAsync(int eventId)
+        public async Task<IEnumerable<EventGallery>> GetEventGalleryImagesAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return new List<EventGallery>();
+
             return await _context.EventGalleries
                 .Where(eg => eg.EventID == eventId)
                 .ToListAsync();
         }
 
-        public async Task<bool> DeleteEventGalleryImageAsync(int galleryImageId)
+        public async Task<bool> DeleteEventGalleryImageAsync(string galleryImageId)
         {
+            if (string.IsNullOrWhiteSpace(galleryImageId))
+                return false;
+
             var galleryImage = await _context.EventGalleries.FindAsync(galleryImageId);
             if (galleryImage == null)
                 return false;
@@ -269,8 +301,11 @@ namespace HeartSyncSolutions.Services
             return report;
         }
 
-        public async Task<EventReport> GetEventReportByEventIdAsync(int eventId)
+        public async Task<EventReport> GetEventReportByEventIdAsync(string eventId)
         {
+            if (string.IsNullOrWhiteSpace(eventId))
+                return null;
+
             return await _context.EventReports
                 .Include(er => er.Event)
                 .FirstOrDefaultAsync(er => er.EventID == eventId);
@@ -305,7 +340,7 @@ namespace HeartSyncSolutions.Services
                 .Select(g => new { Status = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(x => x.Status, x => x.Count);
         }
-        
+
         public async Task<Dictionary<string, int>> GetEventCountByTypeAsync()
         {
             return await _context.Events

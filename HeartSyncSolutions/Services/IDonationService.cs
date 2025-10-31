@@ -9,7 +9,7 @@ namespace HeartSyncSolutions.Services
     {
         // Monetary Donation Methods
         Task<MonetaryDonations> CreateMonetaryDonationAsync(MonetaryDonations donation);
-        Task<MonetaryDonations> GetMonetaryDonationByIdAsync(int donationId);
+        Task<MonetaryDonations> GetMonetaryDonationByIdAsync(string donationId);
         Task<IEnumerable<MonetaryDonations>> GetAllMonetaryDonationsAsync();
         Task<IEnumerable<MonetaryDonations>> GetMonetaryDonationsByUserAsync(string userId);
         Task<IEnumerable<MonetaryDonations>> GetAnonymousMonetaryDonationsAsync();
@@ -17,18 +17,18 @@ namespace HeartSyncSolutions.Services
         Task<double> GetTotalMonetaryDonationsAsync();
         Task<double> GetTotalMonetaryDonationsByUserAsync(string userId);
         Task<bool> UpdateMonetaryDonationAsync(MonetaryDonations donation);
-        Task<bool> DeleteMonetaryDonationAsync(int donationId);
+        Task<bool> DeleteMonetaryDonationAsync(string donationId);
 
         // In-Kind Offer Methods
         Task<InKindOffer> CreateInKindOfferAsync(InKindOffer offer);
-        Task<InKindOffer> GetInKindOfferByIdAsync(int offerId);
+        Task<InKindOffer> GetInKindOfferByIdAsync(string offerId);
         Task<IEnumerable<InKindOffer>> GetAllInKindOffersAsync();
         Task<IEnumerable<InKindOffer>> GetInKindOffersByStatusAsync(string status);
         Task<IEnumerable<InKindOffer>> GetInKindOffersByUserAsync(string userId);
         Task<IEnumerable<InKindOffer>> GetInKindOffersByDateRangeAsync(DateTime startDate, DateTime endDate);
-        Task<bool> UpdateInKindOfferStatusAsync(int offerId, string newStatus);
+        Task<bool> UpdateInKindOfferStatusAsync(string offerId, string newStatus);
         Task<bool> UpdateInKindOfferAsync(InKindOffer offer);
-        Task<bool> DeleteInKindOfferAsync(int offerId);
+        Task<bool> DeleteInKindOfferAsync(string offerId);
 
         // Combined/Statistical Methods
         Task<int> GetTotalDonationCountAsync();
