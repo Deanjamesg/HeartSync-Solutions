@@ -20,14 +20,8 @@ namespace HeartSyncSolutions.Controllers
             {
                 return PartialView("Index");
             }
-
-            // For initial page load, return full view with layout
             return View();
-        }
 
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

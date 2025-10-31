@@ -1,4 +1,4 @@
-using HeartSyncSolutions.Data;
+﻿using HeartSyncSolutions.Data;
 using HeartSyncSolutions.Models; 
 using HeartSyncSolutions.Services;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +8,7 @@ namespace HeartSyncSolutions
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,37 +22,67 @@ namespace HeartSyncSolutions
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // This is the main identity setup.
-            // We're swapping AddDefaultIdentity for AddIdentity.
-            // This lets us use our ApplicationUser and add support for Roles.
+            // Add Database Developer Page Exception Filter
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            // Configure Identity to use ApplicationUser (single configuration)
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                // Keeping password rules simple for dev
-                options.SignIn.RequireConfirmedAccount = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 6;
-            })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders(); // Adds support for password resets
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;
 
-            // Register our custom services for dependency injection
+                // User settings
+                options.User.RequireUniqueEmail = true;
+
+                // Sign in settings
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders()
+            .AddDefaultUI(); // This adds the default Identity UI
+
+            // Configure cookie settings
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
+            
+            // Register custom services
             builder.Services.AddScoped<IDonationService, DonationService>();
             builder.Services.AddScoped<IEventService, EventService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddControllersWithViews();
 
-            // We need to add Razor Pages because the Identity UI (login/register)
-            // is built with Razor Pages, even in an MVC app.
+            // Add Razor Pages for Identity UI
             builder.Services.AddRazorPages();
-
 
             var app = builder.Build();
 
-            // --- 2. Configure the HTTP request pipeline ---
+            // --- 2. Seed roles on startup ---
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                
+                try
+                {
+                    await SeedRolesAsync(services, logger);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred while seeding roles.");
+                }
+            }
+
+            // --- 3. Configure the HTTP request pipeline ---
 
             if (app.Environment.IsDevelopment())
             {
@@ -69,22 +99,50 @@ namespace HeartSyncSolutions
 
             app.UseRouting();
 
-            // We must add Authentication() *before* Authorization().
-            // This finds out who the user is.
+            // Authentication must come before Authorization
             app.UseAuthentication();
-            // This checks what they are allowed to do.
             app.UseAuthorization();
 
-
-            // This is our main route for controllers
+            // Map controller routes
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            // This maps the routes for the Identity Razor Pages (login/register)
+            // Map Razor Pages for Identity UI
             app.MapRazorPages();
 
             app.Run();
+        }
+
+        // Method to seed default roles
+        private static async Task SeedRolesAsync(IServiceProvider serviceProvider, ILogger logger)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            string[] roleNames = { "Admin", "User" };
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                
+                if (!roleExist)
+                {
+                    var result = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    
+                    if (result.Succeeded)
+                    {
+                        logger.LogInformation($"✅ Role '{roleName}' created successfully.");
+                    }
+                    else
+                    {
+                        logger.LogError($"❌ Failed to create role '{roleName}'.");
+                    }
+                }
+                else
+                {
+                    logger.LogInformation($"ℹ️ Role '{roleName}' already exists.");
+                }
+            }
         }
     }
 }
