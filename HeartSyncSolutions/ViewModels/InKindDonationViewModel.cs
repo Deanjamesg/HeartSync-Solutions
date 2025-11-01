@@ -9,13 +9,13 @@ namespace HeartSyncSolutions.ViewModels
 
         // Item Description
         [Required(ErrorMessage = "Please describe the items you'd like to donate")]
-        [StringLength(500, MinimumLength = 10, ErrorMessage = "Description must be between 10 and 500 characters")]
+        [StringLength(500, MinimumLength = 1, ErrorMessage = "Description must be between 10 and 500 characters")]
         [Display(Name = "Item Description")]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Please select an available date")]
         [Display(Name = "Drop-Off Date")]
         [DataType(DataType.Date)]
-        public DateTime DeliveryDate { get; set; }
+        public DateTime AvailableDate { get; set; }
     }
 }

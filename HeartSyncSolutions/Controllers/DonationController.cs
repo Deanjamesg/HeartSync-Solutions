@@ -251,12 +251,19 @@ namespace HeartSyncSolutions.Controllers
             {
                 var allInKindDonations = await _donationService.GetAllInKindDonationsAsync();
 
+                var viewModel = new AdminInKindDonationsViewModel
+                {
+                    InKindDonations = allInKindDonations
+                        .Select(d => InKindDonationItem.FromInKindDonation(d))
+                        .ToList()
+                };
+
                 if (Request.Headers["HX-Request"] == "true")
                 {
-                    return PartialView("_DonationRequests", allInKindDonations);
+                    return PartialView("_DonationRequests", viewModel);
                 }
 
-                return View("_DonationRequests", allInKindDonations);
+                return View("_DonationRequests", viewModel);
             }
             catch (Exception ex)
             {

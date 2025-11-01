@@ -1,3 +1,5 @@
+﻿@model HeartSyncSolutions.ViewModels.AdminInKindDonationsViewModel
+
 <div class="content-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>In-Kind Donation Requests</h3>
@@ -10,7 +12,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">8</h3>
+                            <h3 class="mb-0">@Model.PendingCount</h3>
                             <small class="text-muted">Pending Requests</small>
                         </div>
                         <i class="bi bi-hourglass-split fs-1 text-warning"></i>
@@ -23,8 +25,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">15</h3>
-                            <small class="text-muted">Approved This Month</small>
+                            <h3 class="mb-0">@Model.ApprovedCount</h3>
+                            <small class="text-muted">Approved</small>
                         </div>
                         <i class="bi bi-check-circle fs-1 text-success"></i>
                     </div>
@@ -36,7 +38,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">3</h3>
+                            <h3 class="mb-0">@Model.GetUpcomingDeliveries().Count</h3>
                             <small class="text-muted">Scheduled Pickups</small>
                         </div>
                         <i class="bi bi-truck fs-1 text-primary"></i>
@@ -49,8 +51,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">42</h3>
-                            <small class="text-muted">Total Received (2025)</small>
+                            <h3 class="mb-0">@Model.CompletedCount</h3>
+                            <small class="text-muted">Completed</small>
                         </div>
                         <i class="bi bi-box-seam fs-1 text-info"></i>
                     </div>
@@ -63,22 +65,22 @@
     <ul class="nav nav-tabs mb-4" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pending" type="button">
-                Pending (8)
+                Pending (@Model.PendingCount)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approved" type="button">
-                Approved (5)
+                Approved (@Model.ApprovedCount)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed" type="button">
-                Completed (15)
+                Completed (@Model.CompletedCount)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#declined" type="button">
-                Declined (2)
+                Cancelled (@Model.CancelledCount)
             </button>
         </li>
     </ul>
@@ -86,164 +88,235 @@
     <div class="tab-content">
         <!-- Pending Requests Tab -->
         <div class="tab-pane fade show active" id="pending" role="tabpanel">
-            <!-- Request Card 1 -->
-            <div class="card request-card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge bg-warning p-2 text-dark mb-2">Pending Review</span>
-                                </div>
-                            </div>
+            @{
+                var pendingDonations = Model.GetDonationsByStatus("Pending");
+                if (pendingDonations.Any())
+                {
+                    foreach (var donation in pendingDonations)
+                    {
+                        <div class="card request-card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-warning text-dark mb-2 p-2">Pending Review</span>
+                                                @if (donation.IsOverdue)
+                                                {
+                                                    <span class="badge bg-danger ms-2 p-2">Overdue</span>
+                                                }
+                                            </div>
+                                        </div>
 
-                            <h5 class="mb-2"><strong>Donor: </strong>Sarah Mitchell</h5>
-                            <p class="text-muted mb-3">
-                                5 bags of winter clothing including jackets, sweaters, and blankets. All items are in good condition,
-                                clean and ready for distribution. Some items still have tags.
-                            </p>
+                                        <h5 class="mb-2"><strong>Donor: </strong>@donation.DonorName</h5>
+                                        <p class="text-muted mb-3">@donation.ItemDescription</p>
 
-                            <div class="row small">
-                                <div class="col-md-6 mb-2">
-                                    <strong>Contact:</strong> sarah.m@email.com<br>
-                                    <strong>Phone:</strong> +27 21 555 1234<br>
-                                    <strong>Delivery:</strong> Drop Off
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                </div>
-                            </div>
+                                        <div class="row small">
+                                            <div class="col-md-6 mb-2">
+                                                <strong>Contact:</strong> @donation.DonorEmail<br>
+                                                <strong>Phone:</strong> @donation.DonorContactNumber
+                                            </div>
+                                        </div>
 
-                            <div class="mt-2">
-                                <p><i class="bi bi-calendar3 me-2"></i><strong>Drop-Off Date:</strong> November 5, 2025</p>
+                                        <div class="mt-2">
+                                            <p><i class="bi bi-calendar3 me-2"></i><strong>Delivery Date:</strong> @donation.DeliveryDate.ToString("MMMM dd, yyyy")</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 text-md-end mt-md-0 mt-3">
+                                        <div class="d-grid gap-2">
+                                            <form asp-action="ApproveInKindDonation" asp-controller="Donation" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="donationId" value="@donation.InKindDonationID" />
+                                                <button type="submit" class="btn btn-success btn-sm w-100">
+                                                    <i class="bi bi-check-circle me-1"></i>Approve Request
+                                                </button>
+                                            </form>
+                                            <a href="mailto:@donation.DonorEmail" class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-envelope me-1"></i>Contact Donor
+                                            </a>
+                                            <form asp-action="DeclineInKindDonation" asp-controller="Donation" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="donationId" value="@donation.InKindDonationID" />
+                                                <button type="submit" class="btn btn-outline-danger btn-sm w-100" onclick="return confirm('Are you sure you want to decline this donation?');">
+                                                    <i class="bi bi-x-circle me-1"></i>Decline
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-check-circle me-1"></i>Approve Request
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm">
-                                    <i class="bi bi-envelope me-1"></i>Contact Donor
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm">
-                                    <i class="bi bi-x-circle me-1"></i>Decline
-                                </button>
-                            </div>
-                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No pending donation requests at the moment.
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
 
         <!-- Approved Requests Tab -->
         <div class="tab-pane fade" id="approved" role="tabpanel">
-            <div class="card request-card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge text-white bg-success p-2 text-dark mb-2">Approved</span>
-                                </div>
-                            </div>
+            @{
+                var approvedDonations = Model.GetDonationsByStatus("Approved");
+                if (approvedDonations.Any())
+                {
+                    foreach (var donation in approvedDonations)
+                    {
+                        <div class="card request-card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-success mb-2 p-2 text-white">Approved</span>
+                                                @if (donation.IsOverdue)
+                                                {
+                                                    <span class="badge bg-danger ms-2 p-2">Overdue</span>
+                                                }
+                                            </div>
+                                        </div>
 
-                            <h5 class="mb-2"><strong>Donor: </strong>Sarah Mitchell</h5>
-                            <p class="text-muted mb-3">
-                                5 bags of winter clothing including jackets, sweaters, and blankets. All items are in good condition,
-                                clean and ready for distribution. Some items still have tags.
-                            </p>
+                                        <h5 class="mb-2"><strong>Donor: </strong>@donation.DonorName</h5>
+                                        <p class="text-muted mb-3">@donation.ItemDescription</p>
 
-                            <div class="row small">
-                                <div class="col-md-6 mb-2">
-                                    <strong>Contact:</strong> sarah.m@email.com<br>
-                                    <strong>Phone:</strong> +27 21 555 1234<br>
-                                    <strong>Delivery:</strong> Drop Off
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                </div>
-                            </div>
+                                        <div class="row small">
+                                            <div class="col-md-6 mb-2">
+                                                <strong>Contact:</strong> @donation.DonorEmail<br>
+                                                <strong>Phone:</strong> @donation.DonorContactNumber
+                                            </div>
+                                        </div>
 
-                            <div class="mt-2">
-                                <p><i class="bi bi-calendar3 me-2"></i><strong>Drop-Off Date:</strong> November 5, 2025</p>
+                                        <div class="mt-2">
+                                            <p><i class="bi bi-calendar3 me-2"></i><strong>Delivery Date:</strong> @donation.DeliveryDate.ToString("MMMM dd, yyyy")</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 text-md-end mt-md-0 mt-3">
+                                        <div class="d-grid gap-2">
+                                            <form asp-action="CompleteInKindDonation" asp-controller="Donation" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="donationId" value="@donation.InKindDonationID" />
+                                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                    <i class="bi bi-check2-all me-1"></i>Mark as Complete
+                                                </button>
+                                            </form>
+                                            <a href="tel:@donation.DonorContactNumber" class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-telephone me-1"></i>Call Donor
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-check2-all me-1"></i>Mark as Complete
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm">
-                                    <i class="bi bi-telephone me-1"></i>Call Donor
-                                </button>
-                            </div>
-                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No approved donations at the moment.
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
 
         <!-- Completed Requests Tab -->
         <div class="tab-pane fade" id="completed" role="tabpanel">
-            <div class="card request-card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge text-white bg-secondary p-2 text-dark mb-2">Completed</span>
+            @{
+                var completedDonations = Model.GetDonationsByStatus("Completed");
+                if (completedDonations.Any())
+                {
+                    foreach (var donation in completedDonations)
+                    {
+                        <div class="card request-card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-secondary mb-2 p-2 text-white">Completed</span>
+                                            </div>
+                                        </div>
+
+                                        <h5 class="mb-2"><strong>Donor: </strong>@donation.DonorName</h5>
+                                        <p class="text-muted mb-3">@donation.ItemDescription</p>
+
+                                        <div class="row small">
+                                            <div class="col-md-6 mb-2">
+                                                <strong>Completed on:</strong> @donation.DeliveryDate.ToString("MMMM dd, yyyy")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 text-md-end mt-md-0 mt-3">
+                                        <div class="text-success">
+                                            <i class="bi bi-check-circle-fill fs-3"></i>
+                                            <p class="small mt-2">Successfully Received</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <h5 class="mb-2"><strong>Donor: </strong>Sarah Mitchell</h5>
-                            <p class="text-muted mb-3">
-                                5 bags of winter clothing including jackets, sweaters, and blankets. All items are in good condition,
-                                clean and ready for distribution. Some items still have tags.
-                            </p>
                         </div>
-
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye me-2"></i>View Donation Details
-                                </button>
-                            </div>
-                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No completed donations yet.
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
 
-        <!-- Declined Requests Tab -->
+        <!-- Cancelled Requests Tab -->
         <div class="tab-pane fade" id="declined" role="tabpanel">
-            <div class="card request-card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <span class="badge text-white bg-danger p-2 text-dark mb-2">Declined</span>
+            @{
+                var cancelledDonations = Model.GetDonationsByStatus("Cancelled");
+                if (cancelledDonations.Any())
+                {
+                    foreach (var donation in cancelledDonations)
+                    {
+                        <div class="card request-card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-danger mb-2 p-2 text-white">Cancelled</span>
+                                            </div>
+                                        </div>
+
+                                        <h5 class="mb-2"><strong>Donor: </strong>@donation.DonorName</h5>
+                                        <p class="text-muted mb-3">@donation.ItemDescription</p>
+
+                                        <div class="row small">
+                                            <div class="col-md-6 mb-2">
+                                                <strong>Original Date:</strong> @donation.DeliveryDate.ToString("MMMM dd, yyyy")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 text-md-end mt-md-0 mt-3">
+                                        <div class="text-muted">
+                                            <i class="bi bi-x-circle-fill fs-3"></i>
+                                            <p class="small mt-2">Request Declined</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <h5 class="mb-2"><strong>Donor: </strong>Sarah Mitchell</h5>
-                            <p class="text-muted mb-3">
-                                5 bags of winter clothing including jackets, sweaters, and blankets. All items are in good condition,
-                                clean and ready for distribution. Some items still have tags.
-                            </p>
                         </div>
-
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye me-2"></i>View Donation Details
-                                </button>
-                            </div>
-                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>No cancelled donations.
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
     </div>
 </div>

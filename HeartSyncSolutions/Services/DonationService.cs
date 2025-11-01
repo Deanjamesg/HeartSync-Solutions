@@ -74,7 +74,7 @@ namespace HeartSyncSolutions.Services
                 var donation = new InKindDonation
                 {
                     ItemDescription = model.Description,
-                    DeliveryDate = model.DeliveryDate,
+                    DeliveryDate = model.AvailableDate,
                     UserID = userId,
                     InKindStatusID = pendingStatus.InKindStatusID
                 };
