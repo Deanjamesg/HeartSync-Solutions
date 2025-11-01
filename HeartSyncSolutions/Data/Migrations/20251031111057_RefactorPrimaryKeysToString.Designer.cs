@@ -4,6 +4,7 @@ using HeartSyncSolutions.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,309 +12,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeartSyncSolutions.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251031111057_RefactorPrimaryKeysToString")]
+    partial class RefactorPrimaryKeysToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.AttendanceStatus", b =>
-                {
-                    b.Property<string>("AttendanceStatusID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("AttendanceStatusID");
-
-                    b.ToTable("AttendanceStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            AttendanceStatusID = "as-11111111-1111-1111-1111-111111111111",
-                            Status = "Signed Up"
-                        },
-                        new
-                        {
-                            AttendanceStatusID = "as-22222222-2222-2222-2222-222222222222",
-                            Status = "Attended"
-                        },
-                        new
-                        {
-                            AttendanceStatusID = "as-33333333-3333-3333-3333-333333333333",
-                            Status = "No Show"
-                        },
-                        new
-                        {
-                            AttendanceStatusID = "as-44444444-4444-4444-4444-444444444444",
-                            Status = "Cancelled"
-                        });
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.Event", b =>
-                {
-                    b.Property<string>("EventID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EventStatusID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EventTypeID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("EventID");
-
-                    b.HasIndex("EventStatusID");
-
-                    b.HasIndex("EventTypeID");
-
-                    b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.EventStatus", b =>
-                {
-                    b.Property<string>("EventStatusID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("EventStatusID");
-
-                    b.ToTable("EventStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            EventStatusID = "es-11111111-1111-1111-1111-111111111111",
-                            Status = "Upcoming"
-                        },
-                        new
-                        {
-                            EventStatusID = "es-33333333-3333-3333-3333-333333333333",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            EventStatusID = "es-44444444-4444-4444-4444-444444444444",
-                            Status = "Cancelled"
-                        });
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.EventType", b =>
-                {
-                    b.Property<string>("EventTypeID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("EventTypeID");
-
-                    b.ToTable("EventTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            EventTypeID = "et-11111111-1111-1111-1111-111111111111",
-                            Title = "Food Drive"
-                        },
-                        new
-                        {
-                            EventTypeID = "et-22222222-2222-2222-2222-222222222222",
-                            Title = "Clothing Drive"
-                        },
-                        new
-                        {
-                            EventTypeID = "et-33333333-3333-3333-3333-333333333333",
-                            Title = "Outing"
-                        });
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.InKindDonation", b =>
-                {
-                    b.Property<string>("InKindDonationID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InKindStatusID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ItemDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("InKindDonationID");
-
-                    b.HasIndex("InKindStatusID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("InKindDonations");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.InKindStatus", b =>
-                {
-                    b.Property<string>("InKindStatusID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("InKindStatusID");
-
-                    b.ToTable("InKindStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            InKindStatusID = "iks-11111111-1111-1111-1111-111111111111",
-                            Status = "Pending"
-                        },
-                        new
-                        {
-                            InKindStatusID = "iks-22222222-2222-2222-2222-222222222222",
-                            Status = "Approved"
-                        },
-                        new
-                        {
-                            InKindStatusID = "iks-33333333-3333-3333-3333-333333333333",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            InKindStatusID = "iks-44444444-4444-4444-4444-444444444444",
-                            Status = "Cancelled"
-                        });
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.MonetaryDonation", b =>
-                {
-                    b.Property<string>("MonetaryDonationID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("DonationAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("float(18)");
-
-                    b.Property<string>("MonetaryDonationStatusID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("MonetaryDonationID");
-
-                    b.HasIndex("MonetaryDonationStatusID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("MonetaryDonations");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.MonetaryDonationStatus", b =>
-                {
-                    b.Property<string>("MonetaryDonationStatusID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("MonetaryDonationStatusID");
-
-                    b.ToTable("MonetaryDonationStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            MonetaryDonationStatusID = "mds-11111111-1111-1111-1111-111111111111",
-                            Status = "Pending"
-                        },
-                        new
-                        {
-                            MonetaryDonationStatusID = "mds-22222222-2222-2222-2222-222222222222",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            MonetaryDonationStatusID = "mds-33333333-3333-3333-3333-333333333333",
-                            Status = "Cancelled"
-                        });
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.UserEvent", b =>
-                {
-                    b.Property<string>("UserEventID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AttendanceStatusID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EventID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserEventID");
-
-                    b.HasIndex("AttendanceStatusID");
-
-                    b.HasIndex("EventID");
-
-                    b.HasIndex("UserID", "EventID")
-                        .IsUnique();
-
-                    b.ToTable("UserEvents");
-                });
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
@@ -329,11 +37,61 @@ namespace HeartSyncSolutions.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("NormalizedName")
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDonor")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVolunteer")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -344,19 +102,16 @@ namespace HeartSyncSolutions.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("HeartSyncSolutions.Models.AttendanceStatus", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("AttendanceStatusID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -419,7 +174,9 @@ namespace HeartSyncSolutions.Data.Migrations
 
                     b.HasKey("EventGalleryID");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.HasIndex("EventID");
+
+                    b.ToTable("EventGalleries");
                 });
 
             modelBuilder.Entity("HeartSyncSolutions.Models.EventReport", b =>
@@ -445,14 +202,7 @@ namespace HeartSyncSolutions.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.HasKey("EventStatusID");
 
                     b.ToTable("EventStatuses");
                 });
@@ -466,13 +216,10 @@ namespace HeartSyncSolutions.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.HasKey("EventTypeID");
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.ToTable("EventTypes");
+                });
 
             modelBuilder.Entity("HeartSyncSolutions.Models.InKindOffer", b =>
                 {
@@ -544,15 +291,13 @@ namespace HeartSyncSolutions.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.HasKey("PartnerPledgeID");
 
                     b.HasIndex("ApplicationUserID")
                         .IsUnique();
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                    b.ToTable("PartnerPledges");
+                });
 
             modelBuilder.Entity("HeartSyncSolutions.Models.UserEvent", b =>
                 {
@@ -603,14 +348,35 @@ namespace HeartSyncSolutions.Data.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetRoles", (string)null);
+                });
 
-                    b.HasDiscriminator().HasValue("IdentityUser");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.UseTphMappingStrategy();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -698,50 +464,18 @@ namespace HeartSyncSolutions.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HeartSyncSolutions.Models.User", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsDonor")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool>("IsVolunteer")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasDiscriminator().HasValue("User");
-                });
-
             modelBuilder.Entity("HeartSyncSolutions.Models.Event", b =>
                 {
                     b.HasOne("HeartSyncSolutions.Models.EventStatus", "EventStatus")
                         .WithMany("Events")
                         .HasForeignKey("EventStatusID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HeartSyncSolutions.Models.EventType", "EventType")
                         .WithMany("Events")
                         .HasForeignKey("EventTypeID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("EventStatus");
@@ -749,50 +483,69 @@ namespace HeartSyncSolutions.Data.Migrations
                     b.Navigation("EventType");
                 });
 
-            modelBuilder.Entity("HeartSyncSolutions.Models.InKindDonation", b =>
+            modelBuilder.Entity("HeartSyncSolutions.Models.EventGallery", b =>
                 {
-                    b.HasOne("HeartSyncSolutions.Models.InKindStatus", "InKindStatus")
-                        .WithMany("InKindDonation")
-                        .HasForeignKey("InKindStatusID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HeartSyncSolutions.Models.User", "User")
-                        .WithMany("InKindDonations")
-                        .HasForeignKey("UserID")
+                    b.HasOne("HeartSyncSolutions.Models.Event", "Event")
+                        .WithMany("GalleryImages")
+                        .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InKindStatus");
-
-                    b.Navigation("User");
+                    b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("HeartSyncSolutions.Models.MonetaryDonation", b =>
+            modelBuilder.Entity("HeartSyncSolutions.Models.EventReport", b =>
                 {
-                    b.HasOne("HeartSyncSolutions.Models.MonetaryDonationStatus", "MonetaryDonationStatus")
-                        .WithMany("MonetaryDonations")
-                        .HasForeignKey("MonetaryDonationStatusID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HeartSyncSolutions.Models.User", "User")
-                        .WithMany("MonetaryDonations")
-                        .HasForeignKey("UserID")
+                    b.HasOne("HeartSyncSolutions.Models.Event", "Event")
+                        .WithOne("EventReport")
+                        .HasForeignKey("HeartSyncSolutions.Models.EventReport", "EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MonetaryDonationStatus");
+                    b.Navigation("Event");
+                });
 
-                    b.Navigation("User");
+            modelBuilder.Entity("HeartSyncSolutions.Models.InKindOffer", b =>
+                {
+                    b.HasOne("HeartSyncSolutions.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("InKindOffers")
+                        .HasForeignKey("ApplicationUserID");
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("HeartSyncSolutions.Models.MonetaryDonations", b =>
+                {
+                    b.HasOne("HeartSyncSolutions.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("MonetaryDonations")
+                        .HasForeignKey("ApplicationUserID");
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("HeartSyncSolutions.Models.PartnerPledge", b =>
+                {
+                    b.HasOne("HeartSyncSolutions.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("PartnerPledge")
+                        .HasForeignKey("HeartSyncSolutions.Models.PartnerPledge", "ApplicationUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("HeartSyncSolutions.Models.UserEvent", b =>
                 {
+                    b.HasOne("HeartSyncSolutions.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("UserEvents")
+                        .HasForeignKey("ApplicationUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HeartSyncSolutions.Models.AttendanceStatus", "AttendanceStatus")
                         .WithMany("UserEvents")
                         .HasForeignKey("AttendanceStatusID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HeartSyncSolutions.Models.Event", "Event")
@@ -801,17 +554,11 @@ namespace HeartSyncSolutions.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HeartSyncSolutions.Models.User", "User")
-                        .WithMany("UserEvents")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("AttendanceStatus");
 
                     b.Navigation("Event");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -865,6 +612,18 @@ namespace HeartSyncSolutions.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HeartSyncSolutions.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("InKindOffers");
+
+                    b.Navigation("MonetaryDonations");
+
+                    b.Navigation("PartnerPledge")
+                        .IsRequired();
+
+                    b.Navigation("UserEvents");
+                });
+
             modelBuilder.Entity("HeartSyncSolutions.Models.AttendanceStatus", b =>
                 {
                     b.Navigation("UserEvents");
@@ -872,6 +631,11 @@ namespace HeartSyncSolutions.Data.Migrations
 
             modelBuilder.Entity("HeartSyncSolutions.Models.Event", b =>
                 {
+                    b.Navigation("EventReport")
+                        .IsRequired();
+
+                    b.Navigation("GalleryImages");
+
                     b.Navigation("UserEvents");
                 });
 
@@ -883,25 +647,6 @@ namespace HeartSyncSolutions.Data.Migrations
             modelBuilder.Entity("HeartSyncSolutions.Models.EventType", b =>
                 {
                     b.Navigation("Events");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.InKindStatus", b =>
-                {
-                    b.Navigation("InKindDonation");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.MonetaryDonationStatus", b =>
-                {
-                    b.Navigation("MonetaryDonations");
-                });
-
-            modelBuilder.Entity("HeartSyncSolutions.Models.User", b =>
-                {
-                    b.Navigation("InKindDonations");
-
-                    b.Navigation("MonetaryDonations");
-
-                    b.Navigation("UserEvents");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,3 +1,5 @@
+@inject Microsoft.AspNetCore.Identity.UserManager<HeartSyncSolutions.Models.ApplicationUser> UserManager
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,6 +44,10 @@
                 <a href="#" hx-get="/Donation/DonationRequests" hx-target="#content-container" hx-push-url="true" class="nav-item" data-nav="donation-requests">
                     <i class="bi bi-inbox-fill"></i>
                     <span>Donation Requests</span>
+                </a> 
+                <a href="#" hx-get="/Donation/DonationsList" hx-target="#content-container" hx-push-url="true" class="nav-item" data-nav="donation-list">
+                    <i class="bi bi-inbox-fill"></i>
+                    <span>View All Donations</span>
                 </a>
                 @* } *@
             </nav>
@@ -60,38 +66,40 @@
                         <div class="header-icon">
                             <i class="bi bi-question-circle"></i>
                         </div>
-                        @* @if (User.Identity.IsAuthenticated)
-                        { *@
-                        <div class="dropdown">
-                            <div class="header-icon dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-                                <i class="bi bi-person-circle"></i>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var firstName = currentUser?.FirstName ?? "User";
+                            
+                            <div class="dropdown">
+                                <div class="header-icon dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><h6 class="dropdown-header">@firstName</h6></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" hx-get="/User/AccountDetails" hx-target="#content-container">
+                                            <i class="bi bi-person-circle me-2"></i>Account Settings
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-2">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                @* <li><h6 class="dropdown-header">@User.Identity.Name</h6></li> *@
-                                <li><h6 class="dropdown-header">USER NAME</h6></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="#" hx-get="/User/AccountDetails" hx-target="#content-container">
-                                        <i class="bi bi-person-circle me-2"></i>Account Settings
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-2">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
-                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                        @* }
+                        }
                         else
-                        { *@
-                        <a href="/Account/Login" class="header-icon" title="Login">
-                            <i class="bi bi-box-arrow-in-right"></i>
-                        </a>
-                        @* } *@
+                        {
+                            <a href="/Account/Login" class="header-icon" title="Login">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                            </a>
+                        }
                     </div>
                 </div>
                 @RenderSection("HeaderMetrics", required: false)
