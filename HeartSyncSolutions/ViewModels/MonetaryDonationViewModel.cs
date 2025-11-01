@@ -1,42 +1,24 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.ViewModels
 {
-    /// <summary>
-    /// View model for monetary (cash) donations
-    /// </summary>
     public class MonetaryDonationViewModel
     {
-        public string MonetaryDonationId { get; set; }
+        // Donation Type (hidden field in form)
+        [Required]
+        public string DonationType { get; set; } = "monetary";
 
-        [Required(ErrorMessage = "Donation amount is required")]
-        [Range(1, double.MaxValue, ErrorMessage = "Donation amount must be greater than 0")]
+        // Donation Amount
+        [Required(ErrorMessage = "Please enter a donation amount")]
+        [Range(10, double.MaxValue, ErrorMessage = "Minimum donation amount is R10")]
         [Display(Name = "Donation Amount")]
-        [DataType(DataType.Currency)]
-        public double DonationAmount { get; set; }
+        public double Amount { get; set; }
 
-        [Display(Name = "Donation Date")]
-        [DataType(DataType.DateTime)]
+        // Is Recurring Donation (monthly)
+        [Display(Name = "Make this a monthly recurring donation")]
+        public bool IsRecurring { get; set; } = false;
+
+        // These will be set by the controller
         public DateTime Date { get; set; } = DateTime.Now;
-
-        [Display(Name = "Make this donation anonymous")]
-        public bool IsAnonymous { get; set; }
-
-        public string ApplicationUserId { get; set; }
-
-        [Display(Name = "Donor Name")]
-        public string DonorName { get; set; }
-
-        [Display(Name = "Donor Email")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string DonorEmail { get; set; }
-
-        [Display(Name = "Payment Method")]
-        public string PaymentMethod { get; set; }
-
-        [Display(Name = "Message (Optional)")]
-        [StringLength(500, ErrorMessage = "Message cannot exceed 500 characters")]
-        public string Message { get; set; }
     }
 }

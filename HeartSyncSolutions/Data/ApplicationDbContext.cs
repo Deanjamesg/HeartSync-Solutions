@@ -1,18 +1,17 @@
 ﻿using HeartSyncSolutions.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using HeartSyncSolutions.Models;
 
 namespace HeartSyncSolutions.Data
 {
-    
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        // DbSet properties for all entities
+        //DbSet properties for all entities
         public DbSet<Event> Events { get; set; }
         public DbSet<EventType> EventTypes { get; set; }
         public DbSet<EventStatus> EventStatuses { get; set; }
@@ -22,6 +21,7 @@ namespace HeartSyncSolutions.Data
         public DbSet<MonetaryDonationStatus> MonetaryDonationStatuses { get; set; }
         public DbSet<InKindDonation> InKindDonations { get; set; }
         public DbSet<InKindStatus> InKindStatuses { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -247,5 +247,6 @@ namespace HeartSyncSolutions.Data
                 new InKindStatus { InKindStatusID = "iks-44444444-4444-4444-4444-444444444444", Status = "Cancelled" }
                 );
         }
+
     }
 }

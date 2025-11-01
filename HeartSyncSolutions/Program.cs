@@ -1,5 +1,5 @@
 ﻿using HeartSyncSolutions.Data;
-using HeartSyncSolutions.Models; 
+using HeartSyncSolutions.Models;
 using HeartSyncSolutions.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +26,7 @@ namespace HeartSyncSolutions
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             // Configure Identity to use ApplicationUser (single configuration)
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 // Password settings
                 options.Password.RequireDigit = true;
@@ -40,11 +40,12 @@ namespace HeartSyncSolutions
                 options.User.RequireUniqueEmail = true;
 
                 // Sign in settings
-                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedAccount = false; // Set to true in production
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders()
-            .AddDefaultUI(); // This adds the default Identity UI
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI(); // This adds the default Identity UI
 
             // Configure cookie settings
             builder.Services.ConfigureApplicationCookie(options =>
@@ -53,11 +54,12 @@ namespace HeartSyncSolutions
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
-            
+
             // Register custom services
-            builder.Services.AddScoped<IDonationService, DonationService>();
-            builder.Services.AddScoped<IEventService, EventService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            //builder.Services.AddScoped<IDonationService, DonationService>();
+            //builder.Services.AddScoped<IEventService, EventService>();
+            //builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<UserService>();
 
             builder.Services.AddControllersWithViews();
 
@@ -66,25 +68,19 @@ namespace HeartSyncSolutions
 
             var app = builder.Build();
 
-            // --- 2. Run the data seeder ---
-            // We create a 'scope' to get the services we need
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                    // Try to run our new initializer (this already seeds roles)
                     await DbInitializer.Initialize(services);
                 }
                 catch (Exception ex)
                 {
-                    // Log an error if something goes wrong
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
-
-            // ---3. Configure the HTTP request pipeline ---
 
             if (app.Environment.IsDevelopment())
             {
@@ -114,37 +110,6 @@ namespace HeartSyncSolutions
             app.MapRazorPages();
 
             app.Run();
-        }
-
-        // Method to seed default roles
-        private static async Task SeedRolesAsync(IServiceProvider serviceProvider, ILogger logger)
-        {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            string[] roleNames = { "Admin", "User" };
-
-            foreach (var roleName in roleNames)
-            {
-                var roleExist = await roleManager.RoleExistsAsync(roleName);
-                
-                if (!roleExist)
-                {
-                    var result = await roleManager.CreateAsync(new IdentityRole(roleName));
-                    
-                    if (result.Succeeded)
-                    {
-                        logger.LogInformation($"✅ Role '{roleName}' created successfully.");
-                    }
-                    else
-                    {
-                        logger.LogError($"❌ Failed to create role '{roleName}'.");
-                    }
-                }
-                else
-                {
-                    logger.LogInformation($"ℹ️ Role '{roleName}' already exists.");
-                }
-            }
         }
     }
 }

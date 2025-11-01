@@ -1,6 +1,3 @@
-﻿@using HeartSyncSolutions.ViewModels
-@model HeartSyncSolutions.ViewModels.DonationHistoryViewModel
-
 <div class="content-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>My Donation History</h3>
@@ -13,7 +10,7 @@
         <div class="col-md-3 mb-3">
             <div class="card stat-card">
                 <div class="card-body">
-                    <h4 class="mb-0">R@(Model.TotalMonetaryDonations.ToString("N2"))</h4>
+                    <h4 class="mb-0">R2,450</h4>
                     <small class="text-muted">Total Donated</small>
                 </div>
             </div>
@@ -21,7 +18,7 @@
         <div class="col-md-3 mb-3">
             <div class="card stat-card">
                 <div class="card-body">
-                    <h4 class="mb-0">@Model.TotalDonationCount</h4>
+                    <h4 class="mb-0">8</h4>
                     <small class="text-muted">Total Donations</small>
                 </div>
             </div>
@@ -29,15 +26,15 @@
         <div class="col-md-3 mb-3">
             <div class="card stat-card">
                 <div class="card-body">
-                    <h4 class="mb-0">@Model.MonetaryDonations.Count()</h4>
-                    <small class="text-muted">Monetary Donations</small>
+                    <h4 class="mb-0">R250</h4>
+                    <small class="text-muted">Monthly Recurring</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
             <div class="card stat-card">
                 <div class="card-body">
-                    <h4 class="mb-0">@Model.TotalInKindDonations</h4>
+                    <h4 class="mb-0">3</h4>
                     <small class="text-muted">In-Kind Donations</small>
                 </div>
             </div>
@@ -57,140 +54,118 @@
                 <option value="">All Types</option>
                 <option value="monetary">Monetary</option>
                 <option value="inKind">In-Kind</option>
+                <option value="recurring">Recurring</option>
             </select>
         </div>
     </div>
 
     <div class="timeline-container">
-        @if (Model.MonetaryDonations.Any() || Model.InKindDonations.Any())
-        {
-            @* Group donations by month *@
-            var allDonations = Model.MonetaryDonations
-                .Select(d => new { Date = d.Date, Type = "Monetary", Item = (object)d })
-                .Concat(Model.InKindDonations
-                    .Select(d => new { Date = d.OfferedDate, Type = "InKind", Item = (object)d }))
-                .OrderByDescending(d => d.Date)
-                .GroupBy(d => new { d.Date.Year, d.Date.Month });
-
-            @foreach (var monthGroup in allDonations)
-            {
-                <div class="timeline-month mb-4">
-                    <h5 class="text-muted mb-3">@(new DateTime(monthGroup.Key.Year, monthGroup.Key.Month, 1).ToString("MMMM yyyy"))</h5>
-                    
-                    @foreach (var donation in monthGroup)
-                    {
-                        @if (donation.Type == "Monetary")
-                        {
-                            var monetaryDonation = (MonetaryDonationViewModel)donation.Item;
-                            <div class="card donation-card mb-3">
-                                <div class="card-body">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-8">
-                                            <div class="d-flex align-items-start">
-                                                <div class="donation-icon bg-success">
-                                                    <i class="bi bi-currency-dollar text-white"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <div class="d-flex justify-content-between align-items-start">
-                                                        <div>
-                                                            <h6 class="mb-2">Monetary Donation</h6>
-                                                            @if (!string.IsNullOrEmpty(monetaryDonation.Message))
-                                                            {
-                                                                <p class="text-muted small mb-2">@monetaryDonation.Message</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                <p class="text-muted small mb-2">General Fund</p>
-                                                            }
-                                                        </div>
-                                                        <h5 class="text-success mb-0">R@monetaryDonation.DonationAmount.ToString("N2")</h5>
-                                                    </div>
-                                                    <div class="d-flex small text-muted gap-5">
-                                                        <span><i class="bi bi-calendar3 me-1"></i>@monetaryDonation.Date.ToString("MMM dd, yyyy")</span>
-                                                        <span><i class="bi bi-check-circle-fill text-success me-1"></i>Completed</span>
-                                                        @if (monetaryDonation.IsAnonymous)
-                                                        {
-                                                            <span><i class="bi bi-eye-slash me-1"></i>Anonymous</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
+        <div class="timeline-month mb-4">
+            <h5 class="text-muted mb-3">October 2025</h5>
+            
+            <div class="card donation-card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-start">
+                                <div class="donation-icon bg-success">
+                                    <i class="bi bi-currency-dollar text-white"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-2">Monetary Donation</h6>
+                                            <p class="text-muted small mb-2">General Fund</p>
                                         </div>
-                                        <div class="col-md-4 text-md-end mt-md-0 mt-3">
-                                            <a asp-controller="Donation" asp-action="Details" 
-                                               asp-route-id="@monetaryDonation.MonetaryDonationId" 
-                                               class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i>Receipt
-                                            </a>
-                                        </div>
+                                        <h5 class="text-success mb-0">R500.00</h5>
+                                    </div>
+                                    <div class="d-flex gap-5 small text-muted">
+                                        <span><i class="bi bi-calendar3 me-1"></i>Oct 25, 2025</span>
+                                        <span><i class="bi bi-check-circle-fill text-success me-1"></i>Completed</span>
                                     </div>
                                 </div>
                             </div>
-                        }
-                        else
-                        {
-                            var inKindDonation = (InKindDonationViewModel)donation.Item;
-                            <div class="card donation-card mb-3">
-                                <div class="card-body">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-8">
-                                            <div class="d-flex align-items-start">
-                                                <div class="donation-icon bg-primary">
-                                                    <i class="bi bi-box-seam text-white"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <div class="d-flex justify-content-between align-items-start">
-                                                        <div>
-                                                            <h6 class="mb-2">In-Kind Donation</h6>
-                                                            <p class="text-muted small mb-2">@inKindDonation.ItemDescription</p>
-                                                        </div>
-                                                        <span class="badge bg-info text-dark">@inKindDonation.Status</span>
-                                                    </div>
-                                                    <div class="d-flex small text-muted gap-5">
-                                                        <span><i class="bi bi-calendar3 me-1"></i>@inKindDonation.OfferedDate.ToString("MMM dd, yyyy")</span>
-                                                        @if (inKindDonation.Status == "Collected" || inKindDonation.Status == "Completed")
-                                                        {
-                                                            <span><i class="bi bi-check-circle-fill text-success me-1"></i>@inKindDonation.Status</span>
-                                                        }
-                                                        else if (inKindDonation.Status == "New Offer")
-                                                        {
-                                                            <span><i class="bi bi-hourglass-split text-warning me-1"></i>Pending Review</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span><i class="bi bi-clock text-info me-1"></i>@inKindDonation.Status</span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 text-md-end mt-md-0 mt-3">
-                                            <a asp-controller="Donation" asp-action="Details" 
-                                               asp-route-id="@inKindDonation.InKindOfferId" 
-                                               asp-route-isInKind="true"
-                                               class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-text me-1"></i>Details
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>Receipt
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="py-5 text-center">
-                <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
-                <h5 class="text-muted">No donations yet</h5>
-                <p class="text-muted">Your donation history will appear here.</p>
-                <button class="btn btn-primary" hx-get="/Donation/Donate" hx-target="#content-container">
-                    <i class="bi bi-gift me-2"></i>Make Your First Donation
-                </button>
             </div>
-        }
+
+            <div class="card donation-card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-start">
+                                <div class="donation-icon bg-primary">
+                                    <i class="bi bi-box-seam text-white"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-2">In-Kind Donation</h6>
+                                            <p class="text-muted small mb-2">5 bags of clothing</p>
+                                        </div>
+                                        <h5 class="text-info mb-0">In-Kind</h5>
+                                    </div>
+                                    <div class="d-flex gap-5 small text-muted">
+                                        <span><i class="bi bi-calendar3 me-1"></i>Oct 15, 2025</span>
+                                        <span><i class="bi bi-check-circle-fill text-success me-1"></i>Received</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-text me-1"></i>Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card donation-card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-start">
+                                <div class="donation-icon bg-warning">
+                                    <i class="bi bi-arrow-repeat text-white"></i>
+                                </div>
+                                <div class="ms-3 flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-2">Monthly Recurring Donation</h6>
+                                            <p class="text-muted small mb-2"><i class="bi bi-arrow-clockwise me-1"></i>Recurring</p>
+                                        </div>
+                                        <h5 class="text-success mb-0">R250.00</h5>
+                                    </div>
+                                    <div class="d-flex gap-5 small text-muted">
+                                        <span><i class="bi bi-calendar3 me-1"></i>Oct 1, 2025</span>
+                                        <span><i class="bi bi-check-circle-fill text-success me-1"></i>Completed</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button class="btn btn-sm btn-outline-danger me-2">
+                                <i class="bi bi-x-circle me-1"></i>Cancel
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>Receipt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="text-center mt-4">
+        <button class="btn btn-outline-primary">
+            <i class="bi bi-arrow-down-circle me-2"></i>Load More
+        </button>
     </div>
 </div>
 

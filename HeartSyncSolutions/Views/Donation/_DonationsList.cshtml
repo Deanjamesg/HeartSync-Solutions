@@ -1,8 +1,7 @@
-﻿@model HeartSyncSolutions.ViewModels.DonationListViewModel
-
 <div class="content-card">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>All Donations</h3>
+
     </div>
 
     <!-- Summary Stats -->
@@ -12,8 +11,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">R@(Model.TotalMonetaryAmount.ToString("N2"))</h3>
-                            <small class="text-muted">Total Donations</small>
+                            <h3 class="mb-0">R145,230</h3>
+                            <small class="text-muted">Total Donations (2025)</small>
                         </div>
                         <i class="bi bi-cash-stack fs-1 text-success"></i>
                     </div>
@@ -25,8 +24,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">@Model.TotalDonationCount</h3>
-                            <small class="text-muted">Total Donations</small>
+                            <h3 class="mb-0">234</h3>
+                            <small class="text-muted">Total Donors</small>
                         </div>
                         <i class="bi bi-people fs-1 text-primary"></i>
                     </div>
@@ -38,10 +37,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">@Model.TotalMonetaryCount</h3>
-                            <small class="text-muted">Monetary Donations</small>
+                            <h3 class="mb-0">R12,450</h3>
+                            <small class="text-muted">This Month</small>
                         </div>
-                        <i class="bi bi-currency-dollar fs-1 text-warning"></i>
+                        <i class="bi bi-calendar-check fs-1 text-warning"></i>
                     </div>
                 </div>
             </div>
@@ -51,10 +50,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h3 class="mb-0">@Model.TotalInKindCount</h3>
-                            <small class="text-muted">In-Kind Donations</small>
+                            <h3 class="mb-0">45</h3>
+                            <small class="text-muted">Recurring Donors</small>
                         </div>
-                        <i class="bi bi-box-seam fs-1 text-info"></i>
+                        <i class="bi bi-arrow-repeat fs-1 text-info"></i>
                     </div>
                 </div>
             </div>
@@ -62,167 +61,85 @@
     </div>
 
     <!-- Filters -->
-    <form asp-action="DonationsList" method="get">
-        <div class="row mb-4">
-            <div class="col-md-3 mb-2">
-                <select class="form-select" name="filterType" asp-for="FilterType">
-                    <option value="">All Types</option>
-                    <option value="monetary">Monetary</option>
-                    <option value="inkind">In-Kind</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-2">
-                <select class="form-select" name="filterStatus" asp-for="FilterStatus">
-                    <option value="">All Status</option>
-                    <option value="New Offer">New Offer</option>
-                    <option value="Contacted">Contacted</option>
-                    <option value="Collected">Collected</option>
-                    <option value="Completed">Completed</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-2">
-                <select class="form-select" name="sortBy" asp-for="SortBy">
-                    <option value="date">Date</option>
-                    <option value="amount">Amount</option>
-                    <option value="donor">Donor</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-funnel me-2"></i>Filter
-                </button>
-            </div>
+    <div class="row mb-4">
+        <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterType">
+                <option value="">All Types</option>
+                <option value="monetary">Monetary</option>
+                <option value="inKind">In-Kind</option>
+                <option value="recurring">Recurring</option>
+            </select>
         </div>
-    </form>
+        <div class="col-md-3 mb-2">
+            <select class="form-select" id="filterStatus">
+                <option value="">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="date" class="form-control" id="filterDateFrom" placeholder="From Date">
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="date" class="form-control" id="filterDateTo" placeholder="To Date">
+        </div>
+        <div class="col-md-2 mb-2">
+            <button class="btn btn-primary w-100">
+                <i class="bi bi-funnel me-2"></i>Filter
+            </button>
+        </div>
+    </div>
 
     <!-- Donations Table -->
     <div class="table-responsive">
-        <table class="table-hover table align-middle">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Donor</th>
                     <th>Type</th>
-                    <th>Amount/Description</th>
+                    <th>Amount</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @* Monetary Donations *@
-                @foreach (var donation in Model.MonetaryDonations)
-                {
-                    <tr>
-                        <td>
-                            <div>@donation.Date.ToString("MMM dd, yyyy")</div>
-                            <small class="text-muted">@donation.Date.ToString("HH:mm")</small>
-                        </td>
-                        <td>
-                            <div>
-                                <strong>@donation.DonorName</strong>
-                                <br>
-                                @if (!string.IsNullOrEmpty(donation.DonorEmail))
-                                {
-                                    <small class="text-muted">@donation.DonorEmail</small>
-                                }
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge bg-success p-2">Monetary</span>
-                        </td>
-                        <td>
-                            <strong class="text-success">R@donation.DonationAmount.ToString("N2")</strong>
-                        </td>
-                        <td>
-                            <span class="badge bg-success p-2">
-                                <i class="bi bi-check-circle me-1"></i>Completed
-                            </span>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-action="Details" 
-                                   asp-route-id="@donation.MonetaryDonationId" 
-                                   class="btn btn-sm btn-outline-primary" 
-                                   title="View Details">
-                                    <i class="bi bi-eye me-2"></i>View
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-
-                @* In-Kind Donations *@
-                @foreach (var donation in Model.InKindDonations)
-                {
-                    <tr>
-                        <td>
-                            <div>@donation.OfferedDate.ToString("MMM dd, yyyy")</div>
-                            <small class="text-muted">@donation.OfferedDate.ToString("HH:mm")</small>
-                        </td>
-                        <td>
-                            <div>
-                                <strong>@donation.DonorName</strong>
-                                <br>
-                                @if (!string.IsNullOrEmpty(donation.ContactEmail))
-                                {
-                                    <small class="text-muted">@donation.ContactEmail</small>
-                                }
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge bg-info p-2">In-Kind</span>
-                        </td>
-                        <td>
-                            <div class="text-truncate" style="max-width: 200px;" title="@donation.ItemDescription">
-                                @donation.ItemDescription
-                            </div>
-                        </td>
-                        <td>
-                            @if (donation.Status == "Collected" || donation.Status == "Completed")
-                            {
-                                <span class="badge bg-success p-2">
-                                    <i class="bi bi-check-circle me-1"></i>@donation.Status
-                                </span>
-                            }
-                            else if (donation.Status == "New Offer")
-                            {
-                                <span class="badge bg-warning text-dark p-2">
-                                    <i class="bi bi-hourglass-split me-1"></i>Pending
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-info p-2">
-                                    <i class="bi bi-clock me-1"></i>@donation.Status
-                                </span>
-                            }
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-action="Details" 
-                                   asp-route-id="@donation.InKindOfferId" 
-                                   asp-route-isInKind="true"
-                                   class="btn btn-sm btn-outline-primary" 
-                                   title="View Details">
-                                    <i class="bi bi-eye me-2"></i>View
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-
-                @if (!Model.MonetaryDonations.Any() && !Model.InKindDonations.Any())
-                {
-                    <tr>
-                        <td colspan="6" class="py-4 text-center">
-                            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                            <span class="text-muted">No donations found</span>
-                        </td>
-                    </tr>
-                }
+                <tr>
+                    <td>
+                        <div>Oct 25, 2025</div>
+                        <small class="text-muted">14:35</small>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>John Smith</strong>
+                            <br>
+                            <small class="text-muted">john.smith@email.com</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-success p-2">Monetary</span>
+                    </td>
+                    <td>
+                        <strong class="text-success">R500.00</strong>
+                    </td>
+                    <td>
+                        <span class="badge bg-success p-2">
+                            <i class="bi bi-check-circle me-1"></i>Completed
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary" title="View Details">
+                                <i class="bi bi-eye me-2"></i>View
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
+
 </div>
 
 <style>

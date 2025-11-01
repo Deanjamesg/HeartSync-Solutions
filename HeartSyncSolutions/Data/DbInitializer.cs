@@ -1,134 +1,76 @@
 ﻿using HeartSyncSolutions.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace HeartSyncSolutions.Data
 {
     public static class DbInitializer
     {
-        // This is the main method we'll call from Program.cs
+        // This method is called from Program.cs
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            // Get the services we need to do the work
-            var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
 
-            // Make sure the database is actually created (good for dev)
-            context.Database.EnsureCreated();
+            // Define the roles
+            string[] roleNames = { "Admin", "User" };
 
-            // --- 1. Seed Roles ---
-            await SeedRolesAsync(roleManager);
-
-            // --- 2. Seed Admin User ---
-            await SeedAdminUserAsync(userManager);
-
-            // --- 3. Seed Lookup Tables ---
-            await SeedEventTypesAsync(context);
-            await SeedEventStatusesAsync(context);
-            await SeedAttendanceStatusesAsync(context);
-        }
-
-        private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
-        {
-            // Check if any roles already exist
-            if (await roleManager.Roles.AnyAsync())
-            {
-                return; // DB has been seeded
-            }
-
-            // Create the roles Frankie mentioned 
-            string[] roleNames = { "Admin", "Finance", "Communications", "SocialMedia", "Operations" };
-
+            // Create roles if they don't exist
             foreach (var roleName in roleNames)
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
-            }
-        }
-
-        private static async Task SeedAdminUserAsync(UserManager<ApplicationUser> userManager)
-        {
-            // Check if our default admin user exists
-            if (await userManager.FindByEmailAsync("admin@heartsync.local") == null)
-            {
-                var adminUser = new ApplicationUser
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
                 {
-                    UserName = "admin@heartsync.local",
-                    Email = "admin@heartsync.local",
-                    FirstName = "Admin",
-                    LastName = "User",
-                    ContactNumber = "000000000",
-                    EmailConfirmed = true // Confirm email so they can log in right away
-                };
-
-                // Create the user with a simple password
-                var result = await userManager.CreateAsync(adminUser, "P@ssword123");
-
-                if (result.Succeeded)
-                {
-                    // Add the new user to the "Admin" role
-                    // This gives them full permissions
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-        }
 
-        private static async Task SeedEventTypesAsync(ApplicationDbContext context)
-        {
-            // Check if event types are already there
-            if (await context.EventTypes.AnyAsync())
+            // Create the admin user
+            var adminEmail = "admin@heartsync.com";
+            var adminPassword = "Admin123$"; // Change this to a more secure password
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
             {
-                return; // DB has been seeded
+                // Create the admin user
+                var newAdmin = new User
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FirstName = "System",
+                    LastName = "Admin",
+                    ContactNumber = "0000000000",
+                    EmailConfirmed = true,
+                    IsVolunteer = false,
+                    IsDonor = false
+                };
+
+                var createAdminResult = await userManager.CreateAsync(newAdmin, adminPassword);
+
+                if (createAdminResult.Succeeded)
+                {
+                    // Assign the admin role to the admin user
+                    await userManager.AddToRoleAsync(newAdmin, "Admin");
+                    Console.WriteLine("Admin user created successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to create admin user:");
+                    foreach (var error in createAdminResult.Errors)
+                    {
+                        Console.WriteLine($"- {error.Description}");
+                    }
+                }
             }
-
-            var eventTypes = new List<EventType>
+            else
             {
-                // Based on Frankie's feedback 
-                new EventType { Title = "Food Drive" },
-                new EventType { Title = "Jacket Drive" },
-                new EventType { Title = "Children's Home Visit" },
-                new EventType { Title = "Old-Age Home Visit" },
-                new EventType { Title = "Prayer Event" }
-            };
-
-            await context.EventTypes.AddRangeAsync(eventTypes);
-            await context.SaveChangesAsync();
-        }
-
-        private static async Task SeedEventStatusesAsync(ApplicationDbContext context)
-        {
-            if (await context.EventStatuses.AnyAsync())
-            {
-                return; // DB has been seeded
+                // Ensure existing admin has the Admin role
+                if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
+                }
+                Console.WriteLine("Admin user already exists.");
             }
-
-            var statuses = new List<EventStatus>
-            {
-                new EventStatus { Status = "Up-coming" }, // Default for new events
-                new EventStatus { Status = "Completed" },
-                new EventStatus { Status = "Cancelled" }
-            };
-
-            await context.EventStatuses.AddRangeAsync(statuses);
-            await context.SaveChangesAsync();
-        }
-
-        private static async Task SeedAttendanceStatusesAsync(ApplicationDbContext context)
-        {
-            if (await context.AttendanceStatuses.AnyAsync())
-            {
-                return; // DB has been seeded
-            }
-
-            var statuses = new List<AttendanceStatus>
-            {
-                new AttendanceStatus { Status = "Signed Up" }, // Default for UC-102
-                new AttendanceStatus { Status = "Attended" }, // For admin to check off (UC-202)
-                new AttendanceStatus { Status = "No Show" }  // For admin to check off
-            };
-
-            await context.AttendanceStatuses.AddRangeAsync(statuses);
-            await context.SaveChangesAsync();
         }
     }
 }

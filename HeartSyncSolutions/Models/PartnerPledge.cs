@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeartSyncSolutions.Models
 {
@@ -25,8 +24,8 @@ namespace HeartSyncSolutions.Models
         public string PayFastToken { get; set; }
 
         // This is the user who owns this pledge
-        public string ApplicationUserID { get; set; }
+        public string UserID { get; set; }
 
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public virtual User User { get; set; }
     }
 }

@@ -1,278 +1,113 @@
 using HeartSyncSolutions.Data;
 using HeartSyncSolutions.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HeartSyncSolutions.Services
 {
-    public class UserService : IUserService
+    public class UserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(
+            ApplicationDbContext context,
+            UserManager<User> userManager,
+            ILogger<UserService> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _logger = logger;
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+        // Get User By ID
+        public async Task<User> GetUserByIdAsync(string userId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
-                return null;
-
-            return await _context.Users
-                .Include(u => u.UserEvents)
-                    .ThenInclude(ue => ue.Event)
-                .Include(u => u.MonetaryDonations)
-                .Include(u => u.InKindOffers)
-                .Include(u => u.PartnerPledge)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        // Get User By Email
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                return null;
-
-            return await _context.Users
-                .Include(u => u.UserEvents)
-                .Include(u => u.MonetaryDonations)
-                .Include(u => u.InKindOffers)
-                .Include(u => u.PartnerPledge)
-                .FirstOrDefaultAsync(u => u.Email == email);
+            return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
+        // Check if Email Exists
+        public async Task<bool> EmailExistsAsync(string email)
         {
-            return await _context.Users
-                .Include(u => u.UserEvents)
-                .Include(u => u.MonetaryDonations)
-                .Include(u => u.InKindOffers)
-                .ToListAsync();
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null;
         }
 
-        public async Task<bool> UpdateUserAsync(ApplicationUser user)
+        // Update User Profile
+        public async Task<bool> UpdateUserAsync(User user)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            var existingUser = await _context.Users.FindAsync(user.Id);
-            if (existingUser == null)
-                return false;
-
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.ContactNumber = user.ContactNumber;
-            existingUser.Email = user.Email;
-            existingUser.PhoneNumber = user.PhoneNumber;
-            existingUser.IsVolunteer = user.IsVolunteer;
-            existingUser.IsDonor = user.IsDonor;
-
-            _context.Users.Update(existingUser);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteUserAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return false;
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                return false;
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<ApplicationUser>> GetVolunteersAsync()
-        {
-            return await _context.Users
-                .Where(u => u.IsVolunteer == true)
-                .Include(u => u.UserEvents)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ApplicationUser>> GetDonorsAsync()
-        {
-            return await _context.Users
-                .Where(u => u.IsDonor == true)
-                .Include(u => u.MonetaryDonations)
-                .Include(u => u.InKindOffers)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ApplicationUser>> GetUsersByRoleAsync(bool isVolunteer, bool isDonor)
-        {
-            return await _context.Users
-                .Where(u => u.IsVolunteer == isVolunteer && u.IsDonor == isDonor)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Event>> GetUserEventsAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<Event>();
-
-            return await _context.UserEvents
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventType)
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventStatus)
-                .Include(ue => ue.AttendanceStatus)
-                .Where(ue => ue.ApplicationUserID == userId)
-                .Select(ue => ue.Event)
-                .OrderByDescending(e => e.Date)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserEvent>> GetUserEventRegistrationsAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<UserEvent>();
-
-            return await _context.UserEvents
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventType)
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventStatus)
-                .Include(ue => ue.AttendanceStatus)
-                .Where(ue => ue.ApplicationUserID == userId)
-                .OrderByDescending(ue => ue.Event.Date)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Event>> GetUserUpcomingEventsAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<Event>();
-
-            var today = DateTime.Today;
-            return await _context.UserEvents
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventType)
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventStatus)
-                .Where(ue => ue.ApplicationUserID == userId && ue.Event.Date >= today)
-                .Select(ue => ue.Event)
-                .OrderBy(e => e.Date)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Event>> GetUserPastEventsAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<Event>();
-
-            var today = DateTime.Today;
-            return await _context.UserEvents
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventType)
-                .Include(ue => ue.Event)
-                    .ThenInclude(e => e.EventStatus)
-                .Where(ue => ue.ApplicationUserID == userId && ue.Event.Date < today)
-                .Select(ue => ue.Event)
-                .OrderByDescending(e => e.Date)
-                .ToListAsync();
-        }
-
-        public async Task<bool> IsUserRegisteredForEventAsync(string userId, string eventId)
-        {
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(eventId))
-                return false;
-
-            return await _context.UserEvents
-                .AnyAsync(ue => ue.ApplicationUserID == userId && ue.EventID == eventId);
-        }
-
-        public async Task<IEnumerable<MonetaryDonations>> GetUserMonetaryDonationsAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<MonetaryDonations>();
-
-            return await _context.MonetaryDonations
-                .Where(d => d.ApplicationUserID == userId)
-                .OrderByDescending(d => d.Date)
-                .ToListAsync();
-        }
-
-        public async Task<double> GetUserTotalDonationAmountAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return 0;
-
-            var total = await _context.MonetaryDonations
-                .Where(d => d.ApplicationUserID == userId)
-                .SumAsync(d => d.DonationAmount);
-            return total;
-        }
-
-        public async Task<IEnumerable<InKindOffer>> GetUserInKindOffersAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return new List<InKindOffer>();
-
-            return await _context.InKindOffers
-                .Where(o => o.ApplicationUserID == userId)
-                .OrderByDescending(o => o.OfferedDate)
-                .ToListAsync();
-        }
-
-        public async Task<PartnerPledge> GetUserPartnerPledgeAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return null;
-
-            return await _context.PartnerPledges
-                .FirstOrDefaultAsync(pp => pp.ApplicationUserID == userId);
-        }
-
-        public async Task<bool> HasActivePartnerPledgeAsync(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId))
-                return false;
-
-            return await _context.PartnerPledges
-                .AnyAsync(pp => pp.ApplicationUserID == userId && pp.Status == "Active");
-        }
-
-        public async Task<int> GetTotalUserCountAsync()
-        {
-            return await _context.Users.CountAsync();
-        }
-
-        public async Task<int> GetVolunteerCountAsync()
-        {
-            return await _context.Users
-                .Where(u => u.IsVolunteer == true)
-                .CountAsync();
-        }
-
-        public async Task<int> GetDonorCountAsync()
-        {
-            return await _context.Users
-                .Where(u => u.IsDonor == true)
-                .CountAsync();
-        }
-
-        public async Task<Dictionary<string, int>> GetUserCountByRoleAsync()
-        {
-            var totalUsers = await _context.Users.CountAsync();
-            var volunteerCount = await _context.Users.Where(u => u.IsVolunteer == true).CountAsync();
-            var donorCount = await _context.Users.Where(u => u.IsDonor == true).CountAsync();
-            var bothCount = await _context.Users.Where(u => u.IsVolunteer == true && u.IsDonor == true).CountAsync();
-
-            return new Dictionary<string, int>
+            try
             {
-                { "Total", totalUsers },
-                { "Volunteers", volunteerCount },
-                { "Donors", donorCount },
-                { "Both", bothCount }
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating user {user.Id}");
+                return false;
+            }
+        }
+
+        // Get User Statistics
+        public async Task<UserStatistics> GetUserStatisticsAsync(string userId)
+        {
+            var totalEvents = await _context.UserEvents
+                .CountAsync(ue => ue.UserID == userId);
+
+            var attendedEvents = await _context.UserEvents
+                .Include(ue => ue.AttendanceStatus)
+                .CountAsync(ue => ue.UserID == userId && ue.AttendanceStatus.Status == "Attended");
+
+            var totalMonetaryDonations = await _context.MonetaryDonations
+                .Where(md => md.UserID == userId)
+                .SumAsync(md => md.DonationAmount);
+
+            var totalInKindDonations = await _context.InKindDonations
+                .CountAsync(ikd => ikd.UserID == userId);
+
+            return new UserStatistics
+            {
+                TotalEventsSignedUp = totalEvents,
+                TotalEventsAttended = attendedEvents,
+                TotalMonetaryDonated = totalMonetaryDonations,
+                TotalInKindDonations = totalInKindDonations
             };
         }
+
+        // Add User to Role
+        public async Task<bool> AddUserToRoleAsync(string userId, string roleName)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) return false;
+
+                var result = await _userManager.AddToRoleAsync(user, roleName);
+                return result.Succeeded;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding user {userId} to role {roleName}");
+                return false;
+            }
+        }
+
+    }
+
+    // Helper Class: User Statistics
+    public class UserStatistics
+    {
+        public int TotalEventsSignedUp { get; set; }
+        public int TotalEventsAttended { get; set; }
+        public double TotalMonetaryDonated { get; set; }
+        public int TotalInKindDonations { get; set; }
     }
 }
