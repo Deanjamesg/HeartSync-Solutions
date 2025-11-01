@@ -56,10 +56,9 @@ namespace HeartSyncSolutions
             });
 
             // Register custom services
-            //builder.Services.AddScoped<IDonationService, DonationService>();
             //builder.Services.AddScoped<IEventService, EventService>();
-            //builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<DonationService>();
 
             builder.Services.AddControllersWithViews();
 
