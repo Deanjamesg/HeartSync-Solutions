@@ -2,8 +2,6 @@
 
 namespace HeartSyncSolutions.Models
 {
-    // This will be used as a linking table for our many-to-many relationships.
-    // It Links Users to an Event.
     public class UserEvent
     {
         // Set the string ID in the constructor
@@ -20,9 +18,9 @@ namespace HeartSyncSolutions.Models
 
         public virtual Event Event { get; set; }
 
-        public string ApplicationUserID { get; set; }
+        public string UserID { get; set; }
 
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public virtual User User { get; set; }
 
         // This links to the "Attended" / "Not Attended" status
         public string AttendanceStatusID { get; set; }

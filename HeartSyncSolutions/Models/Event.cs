@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartSyncSolutions.Models
 {
@@ -36,10 +34,5 @@ namespace HeartSyncSolutions.Models
         // An Event can have many volunteers (UserEvents)
         public virtual ICollection<UserEvent> UserEvents { get; set; }
 
-        // An Event can have many gallery images
-        public virtual ICollection<EventGallery> GalleryImages { get; set; }
-
-        // An Event has one report
-        public virtual EventReport EventReport { get; set; }
     }
 }
